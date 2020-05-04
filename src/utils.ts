@@ -1,10 +1,10 @@
 /* Validate a possible object ie. o = { "a": 2 } */
-export const isJSONObject = (o) =>
+export const isJSONObject = (o: object): boolean =>
   !!o && (typeof o === 'object') && !Array.isArray(o) &&
   (() => { try { return Boolean(JSON.stringify(o)); } catch { return false } })()
 
 /* Validate a possible JSON object represented as string ie. s = '{ "a": 3 }' */
-export function isJSONObjectString(s) {
+export const isJSONObjectString = (s: string): boolean => {
   try {
     const o = JSON.parse(s);
     return !!o && (typeof o === 'object') && !Array.isArray(o)
@@ -20,7 +20,7 @@ export function isJSONObjectString(s) {
 // - try ... JSON.stringify / JSON.parse - Asks JavaScript engine to determine if valid JSON
 
 
-export function flattenJSONObject(data) {
+export const flattenJSONObject = (data: object): object => {
   if (!isJSONObject(data)) {
     throw TypeError('Cannot flatten non JSON arguments');
   }
