@@ -46,3 +46,7 @@ export const flattenJSONObject = (data: object): object => {
   recurse(data, "");
   return result;
 }
+
+export const filterBy = (items: Array<string>, filter: string): Array<string> => {
+  return items.filter(item => new RegExp('^' + filter.replace(/\*/g, '.*') + '$').test(item))
+}
