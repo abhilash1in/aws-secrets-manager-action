@@ -1,0 +1,43 @@
+{
+  "name": "aws-secrets-manager-action",
+  "version": "0.1.0",
+  "description": "GitHub Action to fetch secrets from AWS Secrets Manager",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint src/index.ts",
+    "package": "ncc build src/index.ts -o dist",
+    "test": "eslint src/index.ts && jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/action-factory/aws-secrets-manager-action.git"
+  },
+  "keywords": [
+    "Github",
+    "Actions",
+    "JavaScript",
+    "AWS",
+    "AWS Secrets Manager"
+  ],
+  "author": "Abhilash Kishore",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/action-factory/aws-secrets-manager-action/issues"
+  },
+  "homepage": "https://github.com/action-factory/aws-secrets-manager-action#readme",
+  "dependencies": {
+    "@actions/core": "^1.2.4",
+    "aws-sdk": "^2.668.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^25.2.1",
+    "@typescript-eslint/eslint-plugin": "^2.30.0",
+    "@typescript-eslint/parser": "^2.30.0",
+    "@zeit/ncc": "^0.22.1",
+    "dotenv": "^8.2.0",
+    "eslint": "^6.8.0",
+    "jest": "^25.5.4",
+    "ts-jest": "^25.4.0",
+    "typescript": "^3.8.3"
+  }
+}
