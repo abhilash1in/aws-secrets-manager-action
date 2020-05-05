@@ -24,17 +24,23 @@ steps:
   - Example: `us-east-1`
 - `secrets`: 
   - List of secret names to be retrieved
-  - To retrieve a single secret, use `secrets: my_secret_1_name`
-  - To retrieve multiple secrets, use: 
-    ```yaml
-    secrets: |
-      my_secret_1_name
-      my_secret_2_name
+  - Examples:
+    - To retrieve a single secret, use `secrets: my_secret_1_name`
+    - To retrieve multiple secrets, use: 
+      ```yaml
+      secrets: |
+        my_secret_1_name
+        my_secret_2_name
+      ```
+    - To retrieve all secrets having names that contain `dev` or begin with `app1/dev/`, use:
+      ```yaml
+      secrets: |
+        *dev*
+        app1/dev/*
     ```
 - `parse_json`
   - Secret values can be plan text strings or stringified JSON objects (valid or invalid!).
-  - If `parse_json: true` and secret value is a valid stringified JSON object, it will be parsed and flattened.
-  - Each of its key value pairs will become individual secrets.
+  - If `parse_json: true` and secret value is a valid stringified JSON object, it will be parsed and flattened. Each of its key value pairs will become individual secrets.
   - Examples: 
 
 | `parse_json` | Actual Secrets<br>(`name` = `value`)         | Parsed Secrets<br>(`name` = `value`) | Explanation                                                                             |
