@@ -5,7 +5,7 @@ GitHub Action to fetch secrets from AWS Secrets Manager.
 ```yaml
 steps:
  - name: Read secrets from AWS Secrets Manager into environment variables
-   uses: action-factory/aws-secrets-manager-action@0.1
+   uses: action-factory/aws-secrets-manager-action@0.2
    with:
     aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
     aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
