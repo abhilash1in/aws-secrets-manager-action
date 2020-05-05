@@ -6,6 +6,12 @@ import { config } from "dotenv"
 
 config({ path: resolve(__dirname, "../.env") })
 
+/* Secrets on AWS Secrets Manager:
+* my_secret_1 = 'test-value-1'
+* my_secret_2 = '{"foo" : "bar"}'
+* my/secret/3 = 'eyJmb28iIDogImJhciJ9' (Base64 secret binary)
+*/
+
 const AWSConfig = {
   accessKeyId: process.env[Inputs.AWS_ACCESS_KEY_ID],
   secretAccessKey: process.env[Inputs.AWS_SECRET_ACCESS_KEY],
@@ -34,7 +40,7 @@ test('Fetch Secret Value: Invalid Secret Name', () => {
 test('List Secrets', () => {
   expect.assertions(1)
   return listSecrets(secretsManagerClient).then(secretNames => {
-    expect(secretNames).toEqual(expect.arrayContaining(['my_secret_1', 'my_secret_2']))
+    expect(secretNames).toEqual(expect.arrayContaining(['my_secret_1', 'my_secret_2', 'my/secret/3']))
   })
 })
 
@@ -66,6 +72,13 @@ test('Get Secret Value Map: parse=false, JSON string value', () => {
   })
 })
 
+test('Get Secret Value Map: parse=true, Base64 encoded JSON string value', () => {
+  expect.assertions(1)
+  return getSecretValueMap(secretsManagerClient, 'my/secret/3', true).then(secretValueMap => {
+    expect(secretValueMap).toMatchObject({ 'my/secret/3.foo': 'bar' })
+  })
+})
+
 test('Get Secret Value Map: Invalid Secret Name', () => {
   expect.assertions(1)
   return getSecretValueMap(secretsManagerClient, 'foobarbaz', false).catch(err => {
@@ -76,13 +89,13 @@ test('Get Secret Value Map: Invalid Secret Name', () => {
 test('Get Secret Names To Fetch: Single Wild Card Name', () => {
   expect.assertions(1)
   return getSecretNamesToFetch(secretsManagerClient, ['*secret*']).then(secretNames => {
-    expect(secretNames).toEqual(expect.arrayContaining(['my_secret_1', 'my_secret_2']))
+    expect(secretNames).toEqual(expect.arrayContaining(['my_secret_1', 'my_secret_2', 'my/secret/3']))
   })
 })
 
 test('Get Secret Names To Fetch: Multiple Wild Card Names', () => {
   expect.assertions(1)
-  return getSecretNamesToFetch(secretsManagerClient, ['my*', 'my_secret*', 'foobarbaz']).then(secretNames => {
-    expect(secretNames).toEqual(expect.arrayContaining(['my_secret_1', 'my_secret_2']))
+  return getSecretNamesToFetch(secretsManagerClient, ['my*', 'my_secret*', 'invalidfoobarbaz']).then(secretNames => {
+    expect(secretNames).toEqual(expect.arrayContaining(['my_secret_1', 'my_secret_2', 'my/secret/3']))
   })
 })
