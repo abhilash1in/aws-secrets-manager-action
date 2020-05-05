@@ -1,4 +1,4 @@
-name: Run Unit Tests
+name: Unit Tests
 on:
   pull_request:
     branches:
@@ -10,7 +10,7 @@ on:
 
 jobs:
   # unit tests
-  units:
+  unit-tests:
     runs-on: ubuntu-latest
     env:
       aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -22,7 +22,7 @@ jobs:
     - run: npm test
 
   # test action works running from the graph  
-  test:
+  action-test:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1

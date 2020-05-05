@@ -1,4 +1,7 @@
 # AWS Secrets Manager GitHub Action
+[![Unit Tests](https://github.com/action-factory/aws-secrets-manager-action/workflows/Unit%20Tests/badge.svg?branch=master)](https://github.com/action-factory/aws-secrets-manager-action/actions?query=workflow%3A%22Unit+Tests%22)
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/action-factory/aws-secrets-manager-action/blob/master/LICENSE)
+
 GitHub Action to fetch secrets from AWS Secrets Manager. 
 
 ## Usage
@@ -37,7 +40,7 @@ steps:
       secrets: |
         *dev*
         app1/dev/*
-    ```
+      ```
 - `parse_json`
   - Secret values can be plan text strings or stringified JSON objects (valid or invalid!).
   - If `parse_json: true` and secret value is a valid stringified JSON object, it will be parsed and flattened. Each of its key value pairs will become individual secrets.
