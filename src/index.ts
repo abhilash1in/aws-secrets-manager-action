@@ -4,7 +4,7 @@ import { Inputs } from './constants'
 import { flattenJSONObject, isJSONObjectString, filterBy } from './utils'
 
 // secretNames input string is a new line separated list of secret names. Take distinct secret names.
-const inputSecretNames: string[] = [...new Set(core.getInput(Inputs.SECRET_NAMES).split("\n").filter(x => x !== ""))]
+const inputSecretNames: string[] = [...new Set(core.getInput(Inputs.SECRETS).split("\n").filter(x => x !== ""))]
 // Check if any secret name contains a wildcard '*'
 const hasWildcard: boolean = inputSecretNames.some(secretName => secretName.includes('*'))
 const shouldParseJSON = (core.getInput(Inputs.PARSE_JSON).trim().toLowerCase() === 'true')

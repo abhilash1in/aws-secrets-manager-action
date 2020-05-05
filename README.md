@@ -1,8 +1,6 @@
 # AWS Secrets Manager GitHub Action
 GitHub Action to fetch secrets from AWS Secrets Manager. 
 
-The fetched secrets are available as environment variables and can be used in subsequent steps in your workflow. 
-
 ## Usage
 ```yaml
 steps:
@@ -12,9 +10,9 @@ steps:
     aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
     aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     aws_region: ${{ secrets.AWS_REGION }}
-    secret_names: |
+    secrets: |
       my_secret_1_name
-      my_secret_2_name
+      app1/dev/*
     parse_json: true
 ```
 
@@ -25,12 +23,12 @@ steps:
 - `aws_region`
   - AWS region code which has your AWS Secrets Manager secrets 
   - Example: `us-east-1`
-- `secret_names`: 
+- `secrets`: 
   - List of secret names to be retrieved
-  - To retrieve a single secret, use `secret_names: my_secret_1_name`
+  - To retrieve a single secret, use `secrets: my_secret_1_name`
   - To retrieve multiple secrets, use: 
     ```yaml
-    secret_names: |
+    secrets: |
       my_secret_1_name
       my_secret_2_name
     ```
@@ -39,9 +37,20 @@ steps:
   - If `parse_json: true` and secret value is a valid stringified JSON object, it will be parsed and flattened.
   - Each of its key value pairs will become individual secrets.
   - Examples: 
-    - If `parse_json` is `true`, secret name is `foo` and value is `'{ "bar": "baz" }'` (valid stringified JSON), the parsed secret will be available as `foo.bar` with value `baz`.
-    - If `parse_json` is `true`, secret name is `foo` and value is `'{ "bar" = "baz" }'` (invalid JSON string), the secret will not be parsed and will be available as `foo` with value `'{ "bar" = "baz" }'`.
-    - If `parse_json` is `false`, secret name is `foo` and value is `'{ "bar": "baz" }'` (or any plain text string), the secret will be available as `foo` with value `'{ "bar": "baz" }'` (as it is). In this case, your application needs to handle parsing of the secret value if applicable.
+
+| `parse_json` | Actual Secrets<br>(`name` = `value`)         | Parsed Secrets<br>(`name` = `value`) | Explanation                                                                             |
+|--------------|----------------------------------------------|--------------------------------------|-----------------------------------------------------------------------------------------|
+| `true`       | `foo` = `{ "bar": "baz" }`                   | `foo.bar` = `baz`                    | Values that can be parsed into a JSON will be parsed and flattened                      |
+| `true`       | `foo` = `{ "bar" = "baz" }`                  | `foo` = `{ "bar" = "baz" }`          | Values that cannot be parsed into a JSON will not be parsed                             |
+| `true`       | `foo` = `{ "bar": "baz" }`<br>`ham` = `eggs` | `foo.bar` = `baz` <br>`ham` = `eggs` | If multiple secrets, values that can be parsed into a JSON will be parsed and flattened |
+| `false`      | `foo` = `{ "bar": "baz" }`                   | `foo` = `{ "bar": "baz" }`           | Not parsed                                                                              |
+
+## Features
+- Can fetch secrets from AWS Secrets Manager and inject them into environment variables which can be used in subsequent steps in your workflow. 
+- Can fetch multiple secrets at once
+- Supports wildcards
+  - `secrets: 'app1/dev/*'` will fetch all secrets having names that begin with `app1/dev/`
+  - `secrets: '*dev*'` will fetch all secrets that have `dev` in their names
 
 ## IAM Policy
 The `aws_access_key_id` and `aws_secret_access_key` used above should belong to an IAM user with the following minimum permissions:
