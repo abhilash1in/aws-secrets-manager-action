@@ -15,7 +15,6 @@ steps:
       app1/dev/*
     parse_json: true
 ```
-
 - `aws_access_key_id`
   - Access Key ID of an IAM user with the required [AWS Secrets Manager permissions](#iam-policy)
 - `aws_secret_access_key`
@@ -44,6 +43,9 @@ steps:
 | `true`       | `foo` = `{ "bar" = "baz" }`                  | `foo` = `{ "bar" = "baz" }`          | Values that cannot be parsed into a JSON will not be parsed                             |
 | `true`       | `foo` = `{ "bar": "baz" }`<br>`ham` = `eggs` | `foo.bar` = `baz` <br>`ham` = `eggs` | If multiple secrets, values that can be parsed into a JSON will be parsed and flattened |
 | `false`      | `foo` = `{ "bar": "baz" }`                   | `foo` = `{ "bar": "baz" }`           | Not parsed                                                                              |
+
+#### Note:
+- `${{ secrets.YOUR_SECRET_NAME }}` refers to [GitHub Secrets](https://help.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets). Create the required secrets (e.g.: AWS credentials) in your GitHub repository before using this GitHub Action.
 
 ## Features
 - Can fetch secrets from AWS Secrets Manager and inject them into environment variables which can be used in subsequent steps in your workflow. 
