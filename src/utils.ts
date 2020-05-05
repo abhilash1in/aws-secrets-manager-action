@@ -1,12 +1,12 @@
 /* Validate a possible object ie. o = { "a": 2 } */
 export const isJSONObject = (o: object): boolean =>
   !!o && (typeof o === 'object') && !Array.isArray(o) &&
-  (() => { try { return Boolean(JSON.stringify(o)); } catch { return false } })()
+  (() => { try { return Boolean(JSON.stringify(o)) } catch { return false } })()
 
 /* Validate a possible JSON object represented as string ie. s = '{ "a": 3 }' */
 export const isJSONObjectString = (s: string): boolean => {
   try {
-    const o = JSON.parse(s);
+    const o = JSON.parse(s)
     return !!o && (typeof o === 'object') && !Array.isArray(o)
   } catch {
     return false
@@ -22,29 +22,29 @@ export const isJSONObjectString = (s: string): boolean => {
 
 export const flattenJSONObject = (data: object): object => {
   if (!isJSONObject(data)) {
-    throw TypeError('Cannot flatten non JSON arguments');
+    throw TypeError('Cannot flatten non JSON arguments')
   }
-  var result = {};
+  var result = {}
   function recurse(cur, prop) {
     if (Object(cur) !== cur) {
-      result[prop] = cur;
+      result[prop] = cur
     } else if (Array.isArray(cur)) {
       for (var i = 0, l = cur.length; i < l; i++)
-        recurse(cur[i], prop + "[" + i + "]");
+        recurse(cur[i], prop + "[" + i + "]")
       if (l == 0)
-        result[prop] = [];
+        result[prop] = []
     } else {
-      var isEmpty = true;
+      var isEmpty = true
       for (var p in cur) {
-        isEmpty = false;
-        recurse(cur[p], prop ? prop + "." + p : p);
+        isEmpty = false
+        recurse(cur[p], prop ? prop + "." + p : p)
       }
       if (isEmpty && prop)
-        result[prop] = {};
+        result[prop] = {}
     }
   }
-  recurse(data, "");
-  return result;
+  recurse(data, "")
+  return result
 }
 
 export const filterBy = (items: Array<string>, filter: string): Array<string> => {
