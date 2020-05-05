@@ -18,10 +18,16 @@ jobs:
     - run: npm test
 
   # test action works running from the graph  
-  # test:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #   - uses: actions/checkout@v1
-  #   - uses: ./
-  #     with:
-  #       milliseconds: 1000
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: ./
+      with:
+        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws_region: ${{ secrets.AWS_REGION }}
+        secret_names: |
+          my_secret_1
+          my_secret_2
+        parse_json: true
