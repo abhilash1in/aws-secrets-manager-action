@@ -1,5 +1,5 @@
 # AWS Secrets Manager GitHub Action
-[![Unit Tests](https://github.com/action-factory/aws-secrets-manager-action/workflows/Unit%20Tests/badge.svg?branch=master)](https://github.com/action-factory/aws-secrets-manager-action/actions?query=workflow%3A%22Unit+Tests%22)
+[![Tests](https://github.com/action-factory/aws-secrets-manager-action/workflows/Tests/badge.svg?branch=master)](https://github.com/action-factory/aws-secrets-manager-action/actions?query=workflow%3A%22Tests%22)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/action-factory/aws-secrets-manager-action/blob/master/LICENSE)
 
 GitHub Action to fetch secrets from AWS Secrets Manager. 
