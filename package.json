@@ -27,7 +27,7 @@
   "homepage": "https://github.com/action-factory/aws-secrets-manager-action#readme",
   "dependencies": {
     "@actions/core": "^1.2.4",
-    "aws-sdk": "^2.668.0"
+    "aws-sdk": "^2.670.0"
   },
   "devDependencies": {
     "@types/jest": "^25.2.1",
