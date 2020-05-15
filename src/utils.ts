@@ -50,3 +50,9 @@ export const flattenJSONObject = (data: object): object => {
 export const filterBy = (items: Array<string>, filter: string): Array<string> => {
   return items.filter(item => new RegExp('^' + filter.replace(/\*/g, '.*') + '$').test(item))
 }
+
+export const getPOSIX = (data: string): string => {
+  if (data.match(/^[0-9]/))
+    data = "_".concat(data)
+  return data.replace(/[^a-zA-Z0-9_]/g, "_")
+}

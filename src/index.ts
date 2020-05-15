@@ -1,7 +1,7 @@
 import * as core from "@actions/core"
 import { SecretsManager } from 'aws-sdk'
 import { Inputs } from './constants'
-import { flattenJSONObject, isJSONObjectString, filterBy } from './utils'
+import { flattenJSONObject, isJSONObjectString, filterBy, getPOSIX } from './utils'
 
 // secretNames input string is a new line separated list of secret names. Take distinct secret names.
 const inputSecretNames: string[] = [...new Set(core.getInput(Inputs.SECRETS).split("\n").filter(x => x !== ""))]
@@ -131,7 +131,7 @@ const injectSecretValueMapToEnvironment = (secretValueMap: object, core): void =
     const secretValue = secretValueMap[secretName]
     core.setSecret(secretValue)
     // If secretName contains non-posix characters, it can't be read by the shell
-    var secretNamePOSIX = secretName.replace(/[^a-zA-Z0-9_]/g, "_")
+    const secretNamePOSIX = getPOSIX(secretName)
     core.debug(`Injecting secret: ${secretName} = ${secretValue}`)
     core.exportVariable(secretName, secretValue)
     core.debug(`Injecting secret: ${secretNamePOSIX} = ${secretValue}`)
