@@ -8,7 +8,7 @@ GitHub Action to fetch secrets from AWS Secrets Manager.
 ```yaml
 steps:
  - name: Read secrets from AWS Secrets Manager into environment variables
-   uses: action-factory/aws-secrets-manager-action@0.2.0
+   uses: action-factory/aws-secrets-manager-action@v0.2.0
    with:
     aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
     aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -42,7 +42,7 @@ steps:
         app1/dev/*
       ```
 - `parse_json`
-  - Secret values can be plan text strings or stringified JSON objects (valid or invalid!).
+  - Secret values can be plain text strings or stringified JSON objects (valid or invalid!).
   - If `parse_json: true` and secret value is a valid stringified JSON object, it will be parsed and flattened. Each of its key value pairs will become individual secrets.
   - Examples: 
 
@@ -55,6 +55,9 @@ steps:
 
 #### Note:
 - `${{ secrets.YOUR_SECRET_NAME }}` refers to [GitHub Secrets](https://help.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets). Create the required secrets (e.g.: AWS credentials) in your GitHub repository before using this GitHub Action.
+- AWS credentials can be omitted if they are provided in the environment, per https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/setting-credentials-node.html
+- Secrets are added to the environment (env) using the same key as used in Secrets Manager, i.e. env.foo will refer to the secret with the name foo.
+- For secret names that are not POSIX compliant, a second environment variable will be set that is POSIX compliant, i.e. /foo/bar.value will be stored in the environment as /foo/bar.value and also as \_foo\_bar\_value
 
 ## Features
 - Can fetch secrets from AWS Secrets Manager and inject them into environment variables which can be used in subsequent steps in your workflow. 
