@@ -130,8 +130,12 @@ const injectSecretValueMapToEnvironment = (secretValueMap: object, core): void =
   for (const secretName in secretValueMap) {
     const secretValue = secretValueMap[secretName]
     core.setSecret(secretValue)
+    // If secretName contains non-posix characters, it can't be read by the shell
+    var secretNamePOSIX = secretName.replace(/[^a-zA-Z0-9_]/g, "_")
     core.debug(`Injecting secret: ${secretName} = ${secretValue}`)
     core.exportVariable(secretName, secretValue)
+    core.debug(`Injecting secret: ${secretNamePOSIX} = ${secretValue}`)
+    core.exportVariable(secretNamePOSIX, secretValue)
   }
 }
 
