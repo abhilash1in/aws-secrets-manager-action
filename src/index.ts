@@ -137,9 +137,11 @@ const injectSecretValueMapToEnvironment = (secretValueMap: object, core): void =
     // Get POSIX compliant name secondary env name that can be read by the shell
     const secretNamePOSIX = getPOSIXString(secretName)
     if (secretName !== secretNamePOSIX) {
-      core.warning(`POSIX compliance: Environment variable names can only contain upper case letters, \
-      digits and underscores. It cannot begin with a digit.
-      Secret name '${secretName}' is not POSIX compliant. It will be changed to '${secretNamePOSIX}'.`)
+      const part1 = `Secret name '${secretName}' is not POSIX compliant. `
+      const part2 = `It will be changed to '${secretNamePOSIX}'.\n\n`
+      const part3 = 'POSIX compliance: environment variable names can only contain upper case letters, '
+      const part4 = 'digits and underscores. It cannot begin with a digit.'
+      core.warning(part1.concat(part2).concat(part3).concat(part4))
     }
     core.debug(`Injecting secret: ${secretNamePOSIX} = ${secretValue}`)
     core.exportVariable(secretNamePOSIX, secretValue)
