@@ -7,16 +7,19 @@ GitHub Action to fetch secrets from AWS Secrets Manager.
 ## Usage
 ```yaml
 steps:
- - name: Read secrets from AWS Secrets Manager into environment variables
-   uses: action-factory/aws-secrets-manager-action@v0.3.0
-   with:
+- name: Read secrets from AWS Secrets Manager into environment variables
+  uses: action-factory/aws-secrets-manager-action@v0.3.0
+  with:
     aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
     aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     aws_region: ${{ secrets.AWS_REGION }}
     secrets: |
-      my_secret_1_name
+      my_secret_1
       app1/dev/*
     parse_json: true
+
+- name: Check if env variable is set after fetching secrets
+  run: if [ -z ${my_secret_1+x} ]; then echo "my_secret_1 is unset"; else echo "my_secret_1 is set to '$my_secret_1'"; fi
 ```
 - `aws_access_key_id`
   - Access Key ID of an IAM user with the required [AWS Secrets Manager permissions](#iam-policy)
@@ -28,14 +31,14 @@ steps:
 - `secrets`: 
   - List of secret names to be retrieved
   - Examples:
-    - To retrieve a single secret, use `secrets: my_secret_1_name`
+    - To retrieve a single secret, use `secrets: my_secret_1`
     - To retrieve multiple secrets, use: 
       ```yaml
       secrets: |
-        my_secret_1_name
-        my_secret_2_name
+        my_secret_1
+        my_secret_2
       ```
-    - To retrieve all secrets having names that contain `dev` or begin with `app1/dev/`, use:
+    - To retrieve "all secrets having names that contain `dev`" or "begin with `app1/dev/`", use:
       ```yaml
       secrets: |
         *dev*
@@ -46,22 +49,23 @@ steps:
   - If `parse_json: true` and secret value is a valid stringified JSON object, it will be parsed and flattened. Each of its key value pairs will become individual secrets.
   - Examples: 
 
-| `parse_json` | Actual Secrets<br>(`name` = `value`)         | Parsed Secrets<br>(`name` = `value`) | Explanation                                                                             |
-|--------------|----------------------------------------------|--------------------------------------|-----------------------------------------------------------------------------------------|
-| `true`       | `foo` = `{ "bar": "baz" }`                   | `foo.bar` = `baz`                    | Values that can be parsed into a JSON will be parsed and flattened                      |
-| `true`       | `foo` = `{ "bar" = "baz" }`                  | `foo` = `{ "bar" = "baz" }`          | Values that cannot be parsed into a JSON will not be parsed                             |
-| `true`       | `foo` = `{ "bar": "baz" }`<br>`ham` = `eggs` | `foo.bar` = `baz` <br>`ham` = `eggs` | If multiple secrets, values that can be parsed into a JSON will be parsed and flattened |
-| `false`      | `foo` = `{ "bar": "baz" }`                   | `foo` = `{ "bar": "baz" }`           | Not parsed                                                                              |
+| `parse_json` | Actual Secrets<br>(`name` = `value`)         | Parsed Secrets<br>(`name` = `value`)                                     | Explanation                                                                             |
+|--------------|----------------------------------------------|--------------------------------------------------------------------------|-----------------------------------------------------------------------------------------|
+| `true`       | `foo` = `{ "bar": "baz" }`                   | `foo.bar` = `baz` AND<br>`foo_bar` = `baz`                               | Values that can be parsed into a JSON will be parsed and flattened                      |
+| `true`       | `/dev/foo` = `{ "bar" = "baz" }`             | `/dev/foo` = `{ "bar" = "baz" }` AND<br>`_dev_foo` = `{ "bar" = "baz" }` | Values that cannot be parsed into a JSON will NOT be parsed                             |
+| `true`       | `foo` = `{ "bar": "baz" }`<br>`ham` = `eggs` | `foo.bar` = `baz` AND<br>`foo_bar` = `baz` AND<br>`ham` = `eggs`         | If multiple secrets, values that can be parsed into a JSON will be parsed and flattened |
+| `false`      | `dev_foo` = `{ "bar": "baz" }`               | `dev_foo` = `{ "bar": "baz" }`                                           | Not parsed                                                                              |
 
 #### Note:
 - `${{ secrets.YOUR_SECRET_NAME }}` refers to [GitHub Secrets](https://help.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets). Create the required secrets (e.g.: AWS credentials) in your GitHub repository before using this GitHub Action.
-- AWS credentials can be omitted if they are provided in the environment, per https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/setting-credentials-node.html
-- Secrets are added to the environment (env) using the same key as used in Secrets Manager, i.e. env.foo will refer to the secret with the name foo.
-- For secret names that are not POSIX compliant, a second environment variable will be set that is POSIX compliant, i.e. /foo/bar.value will be stored in the environment as /foo/bar.value and also as \_foo\_bar\_value
+- Secrets added to the environment will have the same name as your secret in AWS Secrets Manager. 
+- However, for secret names that contain characters other than letters, digits, and underscores (`_`), a second environment variable will be set that contains only letters, digits, underscores. That is, `/dev/foo.bar` will be stored in the environment as `/dev/foo.bar` and also as `_dev_foo_bar`.
+- Empty strings can be used for AWS credentials if you are using a self-hosted GitHub Actions Runner on AWS EC2 instances with an IAM instance profile attached.
 
 ## Features
 - Can fetch secrets from AWS Secrets Manager and inject them into environment variables which can be used in subsequent steps in your workflow. 
-- Can fetch multiple secrets at once
+- Injects environment variables in a format compatible with most shells.
+- Can fetch multiple secrets at once.
 - Supports wildcards
   - `secrets: 'app1/dev/*'` will fetch all secrets having names that begin with `app1/dev/`
   - `secrets: '*dev*'` will fetch all secrets that have `dev` in their names
