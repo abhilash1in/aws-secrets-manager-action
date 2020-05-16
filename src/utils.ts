@@ -1,9 +1,9 @@
-/* Validate a possible object ie. o = { "a": 2 } */
+/* Validate a possible object i.e., o = { "a": 2 } */
 export const isJSONObject = (o: object): boolean =>
   !!o && (typeof o === 'object') && !Array.isArray(o) &&
   ((): boolean => { try { return Boolean(JSON.stringify(o)) } catch { return false } })()
 
-/* Validate a possible JSON object represented as string ie. s = '{ "a": 3 }' */
+/* Validate a possible JSON object represented as string i.e., s = '{ "a": 3 }' */
 export const isJSONObjectString = (s: string): boolean => {
   try {
     const o = JSON.parse(s)

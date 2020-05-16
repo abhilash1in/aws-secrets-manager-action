@@ -15,7 +15,8 @@
         "plugin:@typescript-eslint/recommended"
     ],
     "plugins": [
-        "@typescript-eslint"
+        "@typescript-eslint",
+        "spellcheck"
     ],
     "globals": {
         "Atomics": "readonly",
@@ -32,6 +33,12 @@
         "key-spacing": ["error", { "beforeColon": false }],
         "linebreak-style": ["error", "unix"],
         "semi": ["error", "never"],
-        "semi-spacing": ["error", {"before": false, "after": true}]
+        "semi-spacing": ["error", {"before": false, "after": true}],
+        "spellcheck/spell-checker": ["warn", {
+                "lang": "en_US", 
+                "skipWords": ["aws", "posix", "rethrow", "ascii", "recurse", "typeof", "falsy"],
+                "skipIfMatch": ["[Dd]ecrypt.?", "[Ww]ildcard.?"]
+            }
+        ]
     }
 }

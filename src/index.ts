@@ -110,7 +110,7 @@ const getSecretValueMap = (secretsManagerClient: SecretsManager,
 
 const getSecretNamesToFetch = (secretsManagerClient: SecretsManager, inputSecretNames: string[]): Promise<Array<string>> => {
   return new Promise<Array<string>>((resolve, reject) => {
-    // list secerts, filter against wildcards and fetch filtered secrets
+    // list secrets, filter against wildcards and fetch filtered secrets
     // else // fetch specified secrets directly
     const secretNames: string[] = []
     listSecrets(secretsManagerClient)

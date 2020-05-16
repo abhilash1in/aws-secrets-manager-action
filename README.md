@@ -6,7 +6,7 @@ GitHub Action to fetch secrets from AWS Secrets Manager and inject them as envir
 
 The injected environment variable names will only contain upper case letters, digits and underscores. It will not begin with a digit. 
 
-If your secret name contains any characters other than upper case letters, digits and underscores, it will not be used directly as the environment variable name. Rather, it will be transfored into a string that only contains upper case letters, digits and underscores. 
+If your secret name contains any characters other than upper case letters, digits and underscores, it will not be used directly as the environment variable name. Rather, it will be transformed into a string that only contains upper case letters, digits and underscores. 
 
 For example:
 - If your secret name is `dev.foo`, the injected environment variable name will be `DEV_FOO`.
@@ -68,7 +68,7 @@ steps:
 
 #### Note:
 - `${{ secrets.YOUR_SECRET_NAME }}` refers to [GitHub Secrets](https://help.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets). Create the required secrets (e.g.: AWS credentials) in your GitHub repository before using this GitHub Action.
-- If your secret name contains any characters other than upper case letters, digits and underscores, it will not be used directly as the environment variable name. Rather, it will be transfored into a string that only contains upper case letters, digits and underscores. 
+- If your secret name contains any characters other than upper case letters, digits and underscores, it will not be used directly as the environment variable name. Rather, it will be transformed into a string that only contains upper case letters, digits and underscores. 
 
 ## Features
 - Can fetch secrets from AWS Secrets Manager and inject them into environment variables which can be used in subsequent steps in your workflow. 
