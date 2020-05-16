@@ -1,4 +1,4 @@
-import { isJSONObject, isJSONObjectString, flattenJSONObject, filterBy, getPOSIX } from '../src/utils'
+import { isJSONObject, isJSONObjectString, flattenJSONObject, filterBy, getPOSIXString } from '../src/utils'
 
 test('Invaid JSON object string test 1', () => {
     expect(isJSONObjectString('["abcd"]')).toBe(false)
@@ -35,10 +35,10 @@ test('FilterBy test', () => {
     expect(filterBy(items, '*an*')).toMatchObject(['Banana'])
 })
 
-test('getPOSIX tests', () => {
-    expect(getPOSIX("abcd")).toEqual("abcd")
-    expect(getPOSIX("100")).toEqual("_100")
-    expect(getPOSIX("my/test/3")).toEqual("my_test_3")
-    expect(getPOSIX("my/test/3.foo")).toEqual("my_test_3_foo")
-    expect(getPOSIX("/my_test/4")).toEqual("_my_test_4")
+test('getPOSIXString tests', () => {
+    expect(getPOSIXString("abcd")).toEqual("abcd")
+    expect(getPOSIXString("100")).toEqual("_100")
+    expect(getPOSIXString("my/test/3")).toEqual("my_test_3")
+    expect(getPOSIXString("my/test/3.foo")).toEqual("my_test_3_foo")
+    expect(getPOSIXString("/my_test/4")).toEqual("_my_test_4")
 })
