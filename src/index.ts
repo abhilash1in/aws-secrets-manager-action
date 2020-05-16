@@ -15,8 +15,10 @@ const AWSConfig = {
 }
 
 const getSecretsManagerClient = (config): SecretsManager => new SecretsManager(config)
-const getSecretValue = (secretsManagerClient, secretName): Promise<object> => secretsManagerClient.getSecretValue({ SecretId: secretName }).promise()
-const listSecretsPaginated = (secretsManagerClient, nextToken): Promise<object> => secretsManagerClient.listSecrets({ NextToken: nextToken }).promise()
+const getSecretValue = (secretsManagerClient, secretName): Promise<object> =>
+  secretsManagerClient.getSecretValue({ SecretId: secretName }).promise()
+const listSecretsPaginated = (secretsManagerClient, nextToken): Promise<object> =>
+  secretsManagerClient.listSecrets({ NextToken: nextToken }).promise()
 
 const listSecrets = (secretsManagerClient: SecretsManager): Promise<Array<string>> => {
   return new Promise<Array<string>>((resolve, reject) => {
@@ -108,23 +110,24 @@ const getSecretValueMap = (secretsManagerClient: SecretsManager,
   })
 }
 
-const getSecretNamesToFetch = (secretsManagerClient: SecretsManager, inputSecretNames: string[]): Promise<Array<string>> => {
-  return new Promise<Array<string>>((resolve, reject) => {
-    // list secrets, filter against wildcards and fetch filtered secrets
-    // else // fetch specified secrets directly
-    const secretNames: string[] = []
-    listSecrets(secretsManagerClient)
-      .then(secrets => {
-        inputSecretNames.forEach(inputSecretName => {
-          secretNames.push(...filterBy(secrets, inputSecretName))
+const getSecretNamesToFetch =
+  (secretsManagerClient: SecretsManager, inputSecretNames: string[]): Promise<Array<string>> => {
+    return new Promise<Array<string>>((resolve, reject) => {
+      // list secrets, filter against wildcards and fetch filtered secrets
+      // else, fetch specified secrets directly
+      const secretNames: string[] = []
+      listSecrets(secretsManagerClient)
+        .then(secrets => {
+          inputSecretNames.forEach(inputSecretName => {
+            secretNames.push(...filterBy(secrets, inputSecretName))
+          })
+          resolve([...new Set(secretNames)])
         })
-        resolve([...new Set(secretNames)])
-      })
-      .catch(err => {
-        reject(err)
-      })
-  })
-}
+        .catch(err => {
+          reject(err)
+        })
+    })
+  }
 
 const injectSecretValueMapToEnvironment = (secretValueMap: object, core): void => {
   for (const secretName in secretValueMap) {
@@ -134,8 +137,9 @@ const injectSecretValueMapToEnvironment = (secretValueMap: object, core): void =
     // Get POSIX compliant name secondary env name that can be read by the shell
     const secretNamePOSIX = getPOSIXString(secretName)
     if (secretName !== secretNamePOSIX) {
-      core.warning('Environment variable names can only contain upper case letters, digits and underscores. It cannot begin with a digit.')
-      core.warning(`Secret name '${secretName}' is not POSIX compliant. It will be changed to '${secretNamePOSIX}'.`)
+      core.warning(`POSIX compliance: Environment variable names can only contain upper case letters, \
+      digits and underscores. It cannot begin with a digit.
+      Secret name '${secretName}' is not POSIX compliant. It will be changed to '${secretNamePOSIX}'.`)
     }
     core.debug(`Injecting secret: ${secretNamePOSIX} = ${secretValue}`)
     core.exportVariable(secretNamePOSIX, secretValue)

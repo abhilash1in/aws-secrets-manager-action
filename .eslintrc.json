@@ -39,6 +39,7 @@
                 "skipWords": ["aws", "posix", "rethrow", "ascii", "recurse", "typeof", "falsy"],
                 "skipIfMatch": ["[Dd]ecrypt.?", "[Ww]ildcard.?"]
             }
-        ]
+        ],
+        "max-len": ["error", { "code": 120 }]
     }
 }
