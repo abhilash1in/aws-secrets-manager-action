@@ -54,5 +54,5 @@ export const filterBy = (items: Array<string>, filter: string): Array<string> =>
 export const getPOSIXString = (data: string): string => {
   if (data.match(/^[0-9]/))
     data = "_".concat(data)
-  return data.replace(/[^a-zA-Z0-9_]/g, "_")
+  return data.replace(/[^a-zA-Z0-9_]/g, "_").toUpperCase()
 }

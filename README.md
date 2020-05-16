@@ -2,7 +2,16 @@
 [![Tests](https://github.com/action-factory/aws-secrets-manager-action/workflows/Tests/badge.svg?branch=master)](https://github.com/action-factory/aws-secrets-manager-action/actions?query=workflow%3A%22Tests%22)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/action-factory/aws-secrets-manager-action/blob/master/LICENSE)
 
-GitHub Action to fetch secrets from AWS Secrets Manager. 
+GitHub Action to fetch secrets from AWS Secrets Manager and inject them as environment variables. 
+
+The injected environment variable names will only contain upper case letters, digits and underscores. It will not begin with a digit. 
+
+If your secret name contains any characters other than upper case letters, digits and underscores, it will not be used directly as the environment variable name. Rather, it will be transfored into a string that only contains upper case letters, digits and underscores. 
+
+For example:
+- If your secret name is `dev.foo`, the injected environment variable name will be `DEV_FOO`.
+- If your secret name is `1/dev/foo`, the injected environment variable name will be `_1_DEV_FOO`.
+- If your secret name is `dev/foo`, value is `{ "bar": "baz" }` and `parse_json` is set to `true`, the injected environment variable name will be `DEV_FOO_BAR` (and value will be `baz`).
 
 ## Usage
 ```yaml
@@ -19,19 +28,21 @@ steps:
     parse_json: true
 
 - name: Check if env variable is set after fetching secrets
-  run: if [ -z ${my_secret_1+x} ]; then echo "my_secret_1 is unset"; else echo "my_secret_1 is set to '$my_secret_1'"; fi
+  run: if [ -z ${MY_SECRET_1+x} ]; then echo "MY_SECRET_1 is unset"; else echo "MY_SECRET_1 is set to '$MY_SECRET_1'"; fi
 ```
 - `aws_access_key_id`
-  - Access Key ID of an IAM user with the required [AWS Secrets Manager permissions](#iam-policy)
+  - Access Key ID of an IAM user with the required [AWS Secrets Manager permissions](#iam-policy).
+  - Empty string can be used ONLY IF you are using a self-hosted GitHub Actions Runner on AWS EC2 instances with an IAM instance profile attached (should have the required [AWS Secrets Manager permissions](#iam-policy)).
 - `aws_secret_access_key`
-  - Corresponding Secret Access Key of the IAM user
+  - Corresponding Secret Access Key of the IAM user.
+  - Empty string can be used ONLY IF you are using a self-hosted GitHub Actions Runner on AWS EC2 instances with an IAM instance profile attached (should have the required [AWS Secrets Manager permissions](#iam-policy)).
 - `aws_region`
-  - AWS region code which has your AWS Secrets Manager secrets 
-  - Example: `us-east-1`
+  - AWS region code which has your AWS Secrets Manager secrets.
+  - Example: `us-east-1`.
 - `secrets`: 
-  - List of secret names to be retrieved
+  - List of secret names to be retrieved.
   - Examples:
-    - To retrieve a single secret, use `secrets: my_secret_1`
+    - To retrieve a single secret, use `secrets: my_secret_1`.
     - To retrieve multiple secrets, use: 
       ```yaml
       secrets: |
@@ -45,38 +56,35 @@ steps:
         app1/dev/*
       ```
 - `parse_json`
-  - Secret values can be plain text strings or stringified JSON objects (valid or invalid!).
-  - If `parse_json: true` and secret value is a valid stringified JSON object, it will be parsed and flattened. Each of its key value pairs will become individual secrets.
+  - If `parse_json: true` and secret value is a **valid** stringified JSON object, it will be parsed and flattened. Each of the key value pairs in the flattened JSON object will become individual secrets. The original secret name will be used as a prefix.
   - Examples: 
 
-| `parse_json` | Actual Secrets<br>(`name` = `value`)         | Parsed Secrets<br>(`name` = `value`)                                     | Explanation                                                                             |
-|--------------|----------------------------------------------|--------------------------------------------------------------------------|-----------------------------------------------------------------------------------------|
-| `true`       | `foo` = `{ "bar": "baz" }`                   | `foo.bar` = `baz` AND<br>`foo_bar` = `baz`                               | Values that can be parsed into a JSON will be parsed and flattened                      |
-| `true`       | `/dev/foo` = `{ "bar" = "baz" }`             | `/dev/foo` = `{ "bar" = "baz" }` AND<br>`_dev_foo` = `{ "bar" = "baz" }` | Values that cannot be parsed into a JSON will NOT be parsed                             |
-| `true`       | `foo` = `{ "bar": "baz" }`<br>`ham` = `eggs` | `foo.bar` = `baz` AND<br>`foo_bar` = `baz` AND<br>`ham` = `eggs`         | If multiple secrets, values that can be parsed into a JSON will be parsed and flattened |
-| `false`      | `dev_foo` = `{ "bar": "baz" }`               | `dev_foo` = `{ "bar": "baz" }`                                           | Not parsed                                                                              |
+| `parse_json` | AWS Secrets Manager Secret<br>(`name` = `value`) | Injected Environment Variable<br>(`name` = `value`) | Explanation                                                                             |
+|--------------|--------------------------------------------------|-----------------------------------------------------|-----------------------------------------------------------------------------------------|
+| `true`       | `foo` = `{ "bar": "baz" }`                       | `FOO_BAR` = `baz`                                   | Values that can be parsed into a JSON will be parsed and flattened                      |
+| `true`       | `1/dev/foo` = `{ "bar" = "baz" }`                | `_1_DEV_FOO` = `{ "bar" = "baz" }`                  | Values that cannot be parsed into a JSON will NOT be parsed                             |
+| `true`       | `foo` = `{ "bar": "baz" }`<br>`ham` = `eggs`     | `FOO_BAR` = `baz` AND<br>`ham` = `eggs`             | If multiple secrets, values that can be parsed into a JSON will be parsed and flattened |
+| `false`      | `dev_foo` = `{ "bar": "baz" }`                   | `DEV_FOO` = `{ "bar": "baz" }`                      | Not parsed                                                                              |
 
 #### Note:
 - `${{ secrets.YOUR_SECRET_NAME }}` refers to [GitHub Secrets](https://help.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets). Create the required secrets (e.g.: AWS credentials) in your GitHub repository before using this GitHub Action.
-- Secrets added to the environment will have the same name as your secret in AWS Secrets Manager. 
-- However, for secret names that contain characters other than letters, digits, and underscores (`_`), a second environment variable will be set that contains only letters, digits, underscores. That is, `/dev/foo.bar` will be stored in the environment as `/dev/foo.bar` and also as `_dev_foo_bar`.
-- Empty strings can be used for AWS credentials if you are using a self-hosted GitHub Actions Runner on AWS EC2 instances with an IAM instance profile attached.
+- If your secret name contains any characters other than upper case letters, digits and underscores, it will not be used directly as the environment variable name. Rather, it will be transfored into a string that only contains upper case letters, digits and underscores. 
 
 ## Features
 - Can fetch secrets from AWS Secrets Manager and inject them into environment variables which can be used in subsequent steps in your workflow. 
 - Injects environment variables in a format compatible with most shells.
 - Can fetch multiple secrets at once.
 - Supports wildcards
-  - `secrets: 'app1/dev/*'` will fetch all secrets having names that begin with `app1/dev/`
-  - `secrets: '*dev*'` will fetch all secrets that have `dev` in their names
+  - `secrets: 'app1/dev/*'` will fetch all secrets having names that begin with `app1/dev/`.
+  - `secrets: '*dev*'` will fetch all secrets that have `dev` in their names.
 
 ## IAM Policy
-The `aws_access_key_id` and `aws_secret_access_key` used above should belong to an IAM user with the following minimum permissions:
+The `aws_access_key_id` and `aws_secret_access_key` provided by you should belong to an IAM user with the following minimum permissions:
 - `secretsmanager:GetSecretValue`
 - `kms:Decrypt`
-  - required only if you use a customer-managed AWS KMS key to encrypt the secret. You do not need this permission to use your account's default AWS managed encryption key for Secrets Manager.
+  - Required only if you use a customer-managed AWS KMS key to encrypt the secret. You do not need this permission to use your account's default AWS managed encryption key for Secrets Manager.
 
-#### Example 1:
+#### Example 1 (Simple):
  If your secrets are encrypted using the default AWS managed encryption key, then the IAM user needs to have a policy attached similar to:
 ```json
 {
@@ -93,7 +101,7 @@ The `aws_access_key_id` and `aws_secret_access_key` used above should belong to 
 }
 ```
 
-#### Example 2:
+#### Example 2 (Advanced):
  If your secrets are encrypted using a customer managed AWS Key Management Service (KMS) key, then the IAM user needs a policy similar to the one below. We can restrict access to specific secrets (resources) in a specific region or we can use `*` for 'Any'.
 ```json
 {

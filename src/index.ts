@@ -130,16 +130,15 @@ const injectSecretValueMapToEnvironment = (secretValueMap: object, core): void =
   for (const secretName in secretValueMap) {
     const secretValue = secretValueMap[secretName]
     core.setSecret(secretValue)
-    core.debug(`Injecting secret: ${secretName} = ${secretValue}`)
-    core.exportVariable(secretName, secretValue)
     // If secretName contains non-posix characters, it can't be read by the shell
     // Get POSIX compliant name secondary env name that can be read by the shell
     const secretNamePOSIX = getPOSIXString(secretName)
-    if (secretName !== secretNamePOSIX){
-      core.debug(`Secret name '${secretName}' is not POSIX compliant.`)
-      core.debug(`Injecting secondary secret: ${secretNamePOSIX} = ${secretValue}`)
-      core.exportVariable(secretNamePOSIX, secretValue)
+    if (secretName !== secretNamePOSIX) {
+      core.warning('Environment variable names can only contain upper case letters, digits and underscores. It cannot begin with a digit.')
+      core.warning(`Secret name '${secretName}' is not POSIX compliant. It will be changed to '${secretNamePOSIX}'.`)
     }
+    core.debug(`Injecting secret: ${secretNamePOSIX} = ${secretValue}`)
+    core.exportVariable(secretNamePOSIX, secretValue)
   }
 }
 
