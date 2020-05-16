@@ -1,10 +1,10 @@
-import * as core from "@actions/core"
+import * as core from '@actions/core'
 import { SecretsManager } from 'aws-sdk'
 import { Inputs } from './constants'
 import { flattenJSONObject, isJSONObjectString, filterBy, getPOSIXString } from './utils'
 
 // secretNames input string is a new line separated list of secret names. Take distinct secret names.
-const inputSecretNames: string[] = [...new Set(core.getInput(Inputs.SECRETS).split("\n").filter(x => x !== ""))]
+const inputSecretNames: string[] = [...new Set(core.getInput(Inputs.SECRETS).split('\n').filter(x => x !== ''))]
 // Check if any secret name contains a wildcard '*'
 const hasWildcard: boolean = inputSecretNames.some(secretName => secretName.includes('*'))
 const shouldParseJSON = (core.getInput(Inputs.PARSE_JSON).trim().toLowerCase() === 'true')
@@ -64,7 +64,7 @@ const getSecretValueMap = (secretsManagerClient: SecretsManager,
         let secretValueMap = {}
 
         // If secretName = 'mySecret' and secretValue='{ "foo": "bar" }'
-        // and if secretValue is a valid JSON object string and shouldParseJSON = true, 
+        // and if secretValue is a valid JSON object string and shouldParseJSON = true,
         // injected secrets will be of the form 'mySecret.foo' = 'bar'
         if (isJSONObjectString(secretValue) && shouldParseJSON) {
           const secretJSON = JSON.parse(secretValue)
@@ -157,12 +157,13 @@ if (hasWildcard) {
     })
 } else {
   inputSecretNames.forEach((secretName) => {
-    getSecretValueMap(secretsManagerClient, secretName, shouldParseJSON).then(map => {
-      injectSecretValueMapToEnvironment(map, core)
-    })
-    .catch(err => {
-      core.setFailed(`Action failed with error: ${err}`)
-    })
+    getSecretValueMap(secretsManagerClient, secretName, shouldParseJSON)
+      .then(map => {
+        injectSecretValueMapToEnvironment(map, core)
+      })
+      .catch(err => {
+        core.setFailed(`Action failed with error: ${err}`)
+      })
   })
 }
 

@@ -4,9 +4,10 @@
   "description": "GitHub Action to fetch secrets from AWS Secrets Manager",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint src/index.ts",
+    "lint": "eslint src/**",
+    "lint:fix": "eslint src/** --fix",
     "package": "ncc build src/index.ts -o dist",
-    "test": "eslint src/index.ts && jest"
+    "test": "eslint src/** && jest"
   },
   "repository": {
     "type": "git",

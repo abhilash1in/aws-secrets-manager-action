@@ -21,5 +21,17 @@
         "Atomics": "readonly",
         "SharedArrayBuffer": "readonly"
     },
-    "rules": {}
+    "rules": {
+        "quotes": ["error", "single"],
+        "eqeqeq": "error",
+        "camelcase": "error",
+        "eol-last": ["error", "always"],
+        "no-multiple-empty-lines": ["error", { "max": 2, "maxEOF": 1 }],
+        "no-trailing-spaces": "error",
+        "indent": ["error", 2],
+        "key-spacing": ["error", { "beforeColon": false }],
+        "linebreak-style": ["error", "unix"],
+        "semi": ["error", "never"],
+        "semi-spacing": ["error", {"before": false, "after": true}]
+    }
 }
