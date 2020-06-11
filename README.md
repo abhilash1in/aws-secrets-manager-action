@@ -11,7 +11,7 @@ If your secret name contains any characters other than upper case letters, digit
 For example:
 - If your secret name is `dev.foo`, the injected environment variable name will be `DEV_FOO`.
 - If your secret name is `1/dev/foo`, the injected environment variable name will be `_1_DEV_FOO`.
-- If your secret name is `dev/foo`, value is `{ "bar": "baz" }` and `parse_json` is set to `true`, the injected environment variable name will be `DEV_FOO_BAR` (and value will be `baz`).
+- If your secret name is `dev/foo`, value is `{ "bar": "baz" }` and `parse-json` is set to `true`, the injected environment variable name will be `DEV_FOO_BAR` (and value will be `baz`).
 
 ## Usage
 ```yaml
@@ -19,24 +19,24 @@ steps:
 - name: Read secrets from AWS Secrets Manager into environment variables
   uses: action-factory/aws-secrets-manager-action@v0.4.0
   with:
-    aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-    aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-    aws_region: ${{ secrets.AWS_REGION }}
+    aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    aws-region: ${{ secrets.AWS_REGION }}
     secrets: |
       my_secret_1
       app1/dev/*
-    parse_json: true
+    parse-json: true
 
 - name: Check if env variable is set after fetching secrets
   run: if [ -z ${MY_SECRET_1+x} ]; then echo "MY_SECRET_1 is unset"; else echo "MY_SECRET_1 is set to '$MY_SECRET_1'"; fi
 ```
-- `aws_access_key_id`
+- `aws-access-key-id`
   - Access Key ID of an IAM user with the required [AWS Secrets Manager permissions](#iam-policy).
   - Empty string can be used ONLY IF you are using a self-hosted GitHub Actions Runner on AWS EC2 instances with an IAM instance profile attached (should have the required [AWS Secrets Manager permissions](#iam-policy)).
-- `aws_secret_access_key`
+- `aws-secret-access-key`
   - Corresponding Secret Access Key of the IAM user.
   - Empty string can be used ONLY IF you are using a self-hosted GitHub Actions Runner on AWS EC2 instances with an IAM instance profile attached (should have the required [AWS Secrets Manager permissions](#iam-policy)).
-- `aws_region`
+- `aws-region`
   - AWS region code which has your AWS Secrets Manager secrets.
   - Example: `us-east-1`.
 - `secrets`: 
@@ -55,11 +55,11 @@ steps:
         *dev*
         app1/dev/*
       ```
-- `parse_json`
-  - If `parse_json: true` and secret value is a **valid** stringified JSON object, it will be parsed and flattened. Each of the key value pairs in the flattened JSON object will become individual secrets. The original secret name will be used as a prefix.
+- `parse-json`
+  - If `parse-json: true` and secret value is a **valid** stringified JSON object, it will be parsed and flattened. Each of the key value pairs in the flattened JSON object will become individual secrets. The original secret name will be used as a prefix.
   - Examples: 
 
-| `parse_json` | AWS Secrets Manager Secret<br>(`name` = `value`) | Injected Environment Variable<br>(`name` = `value`) | Explanation                                                                             |
+| `parse-json` | AWS Secrets Manager Secret<br>(`name` = `value`) | Injected Environment Variable<br>(`name` = `value`) | Explanation                                                                             |
 |--------------|--------------------------------------------------|-----------------------------------------------------|-----------------------------------------------------------------------------------------|
 | `true`       | `foo` = `{ "bar": "baz" }`                       | `FOO_BAR` = `baz`                                   | Values that can be parsed into a JSON will be parsed and flattened                      |
 | `true`       | `1/dev/foo` = `{ "bar" = "baz" }`                | `_1_DEV_FOO` = `{ "bar" = "baz" }`                  | Values that cannot be parsed into a JSON will NOT be parsed                             |
@@ -79,7 +79,7 @@ steps:
   - `secrets: '*dev*'` will fetch all secrets that have `dev` in their names.
 
 ## IAM Policy
-The `aws_access_key_id` and `aws_secret_access_key` provided by you should belong to an IAM user with the following minimum permissions:
+The `aws-access-key-id` and `aws-secret-access-key` provided by you should belong to an IAM user with the following minimum permissions:
 - `secretsmanager:GetSecretValue`
 - `kms:Decrypt`
   - Required only if you use a customer-managed AWS KMS key to encrypt the secret. You do not need this permission to use your account's default AWS managed encryption key for Secrets Manager.

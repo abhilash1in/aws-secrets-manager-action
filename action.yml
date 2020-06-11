@@ -2,19 +2,19 @@ name: 'AWS Secrets Manager Action'
 author: 'Abhilash Kishore'
 description: 'GitHub Action to fetch secrets from AWS Secrets Manager'
 inputs:
-  aws_access_key_id:
+  aws-access-key-id:
     description: 'Access Key ID of the IAM user with the required AWS Secrets Manager permissions'
     required: true
-  aws_secret_access_key:
+  aws-secret-access-key:
     description: 'Corresponding Secret Access Key of the IAM user with the required AWS Secrets Manager permissions'
     required: true
-  aws_region:
+  aws-region:
     description: 'The region of AWS Secrets Manager which contains your secrets (e.g.: us-east-1)'
     required: true
   secrets:
     description: 'List of secret names you want to fetch secret values for'
     required: true
-  parse_json:
+  parse-json:
     description: 'If true and secret values are stringified JSON objects, they will be parsed and flattened. Its key value pairs will become individual secrets'
     required: false
     default: 'false'
