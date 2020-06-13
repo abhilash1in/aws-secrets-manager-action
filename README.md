@@ -17,7 +17,7 @@ For example:
 ```yaml
 steps:
 - name: Read secrets from AWS Secrets Manager into environment variables
-  uses: action-factory/aws-secrets-manager-action@v0.4.0
+  uses: action-factory/aws-secrets-manager-action@v0.5.0
   with:
     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -79,7 +79,7 @@ steps:
   - `secrets: '*dev*'` will fetch all secrets that have `dev` in their names.
 
 ## IAM Policy
-The `aws_access_key_id` and `aws_secret_access_key` provided by you should belong to an IAM user with the following minimum permissions:
+The `aws-access-key-id` and `aws-secret-access-key` provided by you should belong to an IAM user with the following minimum permissions:
 - `secretsmanager:GetSecretValue`
 - `kms:Decrypt`
   - Required only if you use a customer-managed AWS KMS key to encrypt the secret. You do not need this permission to use your account's default AWS managed encryption key for Secrets Manager.
