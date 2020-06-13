@@ -1,4 +1,5 @@
 import { getSecretValue, listSecrets, getSecretValueMap, getSecretNamesToFetch } from '../src/index'
+import { getPOSIXString } from '../src/utils'
 import { SecretsManager } from 'aws-sdk'
 import { Inputs } from '../src/constants'
 import { resolve } from "path"
@@ -13,9 +14,9 @@ config({ path: resolve(__dirname, "../.env") })
 */
 
 const AWSConfig = {
-  accessKeyId: process.env[Inputs.AWS_ACCESS_KEY_ID],
-  secretAccessKey: process.env[Inputs.AWS_SECRET_ACCESS_KEY],
-  region: process.env[Inputs.AWS_REGION]
+  accessKeyId: process.env[getPOSIXString(Inputs.AWS_ACCESS_KEY_ID)],
+  secretAccessKey: process.env[getPOSIXString(Inputs.AWS_SECRET_ACCESS_KEY)],
+  region: process.env[getPOSIXString(Inputs.AWS_REGION)]
 }
 
 const secretsManagerClient = new SecretsManager(AWSConfig)
