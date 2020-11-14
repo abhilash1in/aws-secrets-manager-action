@@ -15,9 +15,9 @@ const AWSConfig = {
 }
 
 const getSecretsManagerClient = (config): SecretsManager => new SecretsManager(config)
-const getSecretValue = (secretsManagerClient, secretName): Promise<object> =>
+const getSecretValue = (secretsManagerClient, secretName) =>
   secretsManagerClient.getSecretValue({ SecretId: secretName }).promise()
-const listSecretsPaginated = (secretsManagerClient, nextToken): Promise<object> =>
+const listSecretsPaginated = (secretsManagerClient, nextToken) =>
   secretsManagerClient.listSecrets({ NextToken: nextToken }).promise()
 
 const listSecrets = (secretsManagerClient: SecretsManager): Promise<Array<string>> => {
@@ -50,8 +50,8 @@ const listSecrets = (secretsManagerClient: SecretsManager): Promise<Array<string
 }
 
 const getSecretValueMap = (secretsManagerClient: SecretsManager,
-  secretName: string, shouldParseJSON = false): Promise<object> => {
-  return new Promise<object>((resolve, reject) => {
+  secretName: string, shouldParseJSON = false) => {
+  return new Promise((resolve, reject) => {
     getSecretValue(secretsManagerClient, secretName)
       .then(data => {
         let secretValue
@@ -129,7 +129,7 @@ const getSecretNamesToFetch =
     })
   }
 
-const injectSecretValueMapToEnvironment = (secretValueMap: object, core): void => {
+const injectSecretValueMapToEnvironment = (secretValueMap, core): void => {
   for (const secretName in secretValueMap) {
     const secretValue = secretValueMap[secretName]
     core.setSecret(secretValue)
