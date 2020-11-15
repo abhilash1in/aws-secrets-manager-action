@@ -15,7 +15,7 @@ const AWSConfig = {
 }
 
 const getSecretsManagerClient = (config): SecretsManager => new SecretsManager(config)
-const getSecretValue = (secretsManagerClient, secretName) =>
+const getSecretValue = (secretsManagerClient: SecretsManager, secretName: string) =>
   secretsManagerClient.getSecretValue({ SecretId: secretName }).promise()
 const listSecretsPaginated = (secretsManagerClient, nextToken) =>
   secretsManagerClient.listSecrets({ NextToken: nextToken }).promise()
@@ -49,8 +49,7 @@ const listSecrets = (secretsManagerClient: SecretsManager): Promise<Array<string
   })
 }
 
-const getSecretValueMap = (secretsManagerClient: SecretsManager,
-  secretName: string, shouldParseJSON = false) => {
+const getSecretValueMap = (secretsManagerClient: SecretsManager, secretName: string, shouldParseJSON = false) => {
   return new Promise((resolve, reject) => {
     getSecretValue(secretsManagerClient, secretName)
       .then(data => {
@@ -60,7 +59,7 @@ const getSecretValueMap = (secretsManagerClient: SecretsManager,
         if ('SecretString' in data) {
           secretValue = data['SecretString']
         } else {
-          const buff = Buffer.from(data['SecretBinary'])
+          const buff = Buffer.from(data['SecretBinary'].toString(), 'base64')
           secretValue = buff.toString('ascii')
         }
         let secretValueMap = {}
@@ -129,9 +128,10 @@ const getSecretNamesToFetch =
     })
   }
 
-const injectSecretValueMapToEnvironment = (secretValueMap, core): void => {
+const injectSecretValueMapToEnvironment = (secretValueMap: Record<string, any>,
+  core: typeof import('@actions/core')): void => {
   for (const secretName in secretValueMap) {
-    const secretValue = secretValueMap[secretName]
+    const secretValue: string = secretValueMap[secretName]
     core.setSecret(secretValue)
     // If secretName contains non-posix characters, it can't be read by the shell
     // Get POSIX compliant name secondary env name that can be read by the shell
