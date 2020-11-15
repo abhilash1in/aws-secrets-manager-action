@@ -6,7 +6,7 @@
   "scripts": {
     "lint": "eslint src/**",
     "lint:fix": "eslint src/** --fix",
-    "package": "ncc build src/index.ts --license licenses.txt -o dist",
+    "package": "ncc build src/index.ts --license licenses.txt --source-map -o dist",
     "test": "eslint src/** && jest --verbose --coverage=true"
   },
   "repository": {
