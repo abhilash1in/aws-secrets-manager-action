@@ -7,7 +7,7 @@
     "lint": "eslint src/**",
     "lint:fix": "eslint src/** --fix",
     "package": "ncc build src/index.ts --license licenses.txt -o dist",
-    "test": "eslint src/** && jest"
+    "test": "eslint src/** && jest --verbose --coverage=true"
   },
   "repository": {
     "type": "git",
