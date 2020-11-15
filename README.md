@@ -1,4 +1,4 @@
-# AWS Secrets Manager GitHub Action
+# AWS Secrets Manager GitHub Action!
 [![Tests](https://github.com/action-factory/aws-secrets-manager-action/workflows/Tests/badge.svg?branch=master)](https://github.com/action-factory/aws-secrets-manager-action/actions?query=workflow%3A%22Tests%22)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/action-factory/aws-secrets-manager-action/blob/master/LICENSE)
 
