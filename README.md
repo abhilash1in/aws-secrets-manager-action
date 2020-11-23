@@ -2,7 +2,7 @@
 [![Tests](https://github.com/action-factory/aws-secrets-manager-action/workflows/Tests/badge.svg?branch=master)](https://github.com/action-factory/aws-secrets-manager-action/actions?query=workflow%3A%22Tests%22)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/action-factory/aws-secrets-manager-action/blob/master/LICENSE)
 
-GitHub Action to fetch secrets from AWS Secrets Manager and inject them as environment variables. 
+GitHub Action to fetch secrets from AWS Secrets Manager and inject them as environment variables into your GitHub Actions workflow. 
 
 The injected environment variable names will only contain upper case letters, digits and underscores. It will not begin with a digit. 
 
@@ -71,7 +71,7 @@ steps:
 - If your secret name contains any characters other than upper case letters, digits and underscores, it will not be used directly as the environment variable name. Rather, it will be transformed into a string that only contains upper case letters, digits and underscores. 
 
 ## Features
-- Can fetch secrets from AWS Secrets Manager and inject them into environment variables which can be used in subsequent steps in your workflow. 
+- Can fetch secrets from AWS Secrets Manager and inject them into environment variables which can be used in subsequent steps in your GitHub Actions workflow. 
 - Injects environment variables in a format compatible with most shells.
 - Can fetch multiple secrets at once.
 - Supports wildcards
