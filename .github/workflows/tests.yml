@@ -18,8 +18,12 @@ jobs:
     - run: npm ci
     - run: npm test
 
-  # test action works running from the graph  
+  # integration test - run latest
   action-test-private:
+    # Run only on 'push' or 'pull_request within same repository (not from a fork)'
+    # since workflows triggered for PRs from a fork will not have access to GitHub secrets
+    if: ${{ github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.base.repo.html_url == github.event.pull_request.head.repo.html_url) }}
+    needs: [unit-tests]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
@@ -30,8 +34,13 @@ jobs:
         aws-region: ${{ secrets.AWS_REGION }}
         secrets: '*secret*'
         parse-json: true
-
+  
+  # integration test - run latest release
   action-test-public:
+    # Run only on 'push' or 'pull_request within same repository (not from a fork)'
+    # since workflows triggered for PRs from a fork will not have access to GitHub secrets
+    if: ${{ github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.base.repo.html_url == github.event.pull_request.head.repo.html_url) }}
+    needs: [unit-tests]
     runs-on: ubuntu-latest
     steps:
     - uses: action-factory/aws-secrets-manager-action@v1.0.0
