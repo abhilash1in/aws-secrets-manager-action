@@ -2,15 +2,15 @@
 [![Tests](https://github.com/action-factory/aws-secrets-manager-action/workflows/Tests/badge.svg?branch=master)](https://github.com/action-factory/aws-secrets-manager-action/actions?query=workflow%3A%22Tests%22)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/action-factory/aws-secrets-manager-action/blob/master/LICENSE)
 
-GitHub Action to fetch secrets from AWS Secrets Manager and inject them as environment variables into your GitHub Actions workflow. 
+GitHub Action to fetch secrets from AWS Secrets Manager and inject them as environment variables into your GitHub Actions workflow.
 
-The injected environment variable names will only contain upper case letters, digits and underscores. It will not begin with a digit. 
+The injected environment variable names will only contain upper case letters, digits and underscores. It will not begin with a digit.
 
-If your secret name contains any characters other than upper case letters, digits and underscores, it will not be used directly as the environment variable name. Rather, it will be transformed into a string that only contains upper case letters, digits and underscores. 
+If your secret name contains any characters other than upper case letters, digits and underscores, it will not be used directly as the environment variable name. Rather, it will be transformed into a string that only contains upper case letters, digits and underscores.
 
 For example:
 - If your secret name is `dev.foo`, the injected environment variable name will be `DEV_FOO`.
-- If your secret name is `1/dev/foo`, the injected environment variable name will be `_1_DEV_FOO`.
+- If your secret name is `1/dev/foo`, the injected environment variable name will be `1_DEV_FOO`.
 - If your secret name is `dev/foo`, value is `{ "bar": "baz" }` and `parse-json` is set to `true`, the injected environment variable name will be `DEV_FOO_BAR` (and value will be `baz`).
 
 ## Usage
@@ -39,11 +39,11 @@ steps:
 - `aws-region`
   - AWS region code which has your AWS Secrets Manager secrets.
   - Example: `us-east-1`.
-- `secrets`: 
+- `secrets`:
   - List of secret names to be retrieved.
   - Examples:
     - To retrieve a single secret, use `secrets: my_secret_1`.
-    - To retrieve multiple secrets, use: 
+    - To retrieve multiple secrets, use:
       ```yaml
       secrets: |
         my_secret_1
@@ -57,21 +57,21 @@ steps:
       ```
 - `parse-json`
   - If `parse-json: true` and secret value is a **valid** stringified JSON object, it will be parsed and flattened. Each of the key value pairs in the flattened JSON object will become individual secrets. The original secret name will be used as a prefix.
-  - Examples: 
+  - Examples:
 
 | `parse-json` | AWS Secrets Manager Secret<br>(`name` = `value`) | Injected Environment Variable<br>(`name` = `value`) | Explanation                                                                             |
 |--------------|--------------------------------------------------|-----------------------------------------------------|-----------------------------------------------------------------------------------------|
 | `true`       | `foo` = `{ "bar": "baz" }`                       | `FOO_BAR` = `baz`                                   | Values that can be parsed into a JSON will be parsed and flattened                      |
-| `true`       | `1/dev/foo` = `{ "bar" = "baz" }`                | `_1_DEV_FOO` = `{ "bar" = "baz" }`                  | Values that cannot be parsed into a JSON will NOT be parsed                             |
+| `true`       | `1/dev/foo` = `{ "bar" = "baz" }`                | `1_DEV_FOO` = `{ "bar" = "baz" }`                   | Values that cannot be parsed into a JSON will NOT be parsed                             |
 | `true`       | `foo` = `{ "bar": "baz" }`<br>`ham` = `eggs`     | `FOO_BAR` = `baz` AND<br>`ham` = `eggs`             | If multiple secrets, values that can be parsed into a JSON will be parsed and flattened |
 | `false`      | `dev_foo` = `{ "bar": "baz" }`                   | `DEV_FOO` = `{ "bar": "baz" }`                      | Not parsed                                                                              |
 
 #### Note:
 - `${{ secrets.YOUR_SECRET_NAME }}` refers to [GitHub Secrets](https://help.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets). Create the required secrets (e.g.: AWS credentials) in your GitHub repository before using this GitHub Action.
-- If your secret name contains any characters other than upper case letters, digits and underscores, it will not be used directly as the environment variable name. Rather, it will be transformed into a string that only contains upper case letters, digits and underscores. 
+- If your secret name contains any characters other than upper case letters, digits and underscores, it will not be used directly as the environment variable name. Rather, it will be transformed into a string that only contains upper case letters, digits and underscores.
 
 ## Features
-- Can fetch secrets from AWS Secrets Manager and inject them into environment variables which can be used in subsequent steps in your GitHub Actions workflow. 
+- Can fetch secrets from AWS Secrets Manager and inject them into environment variables which can be used in subsequent steps in your GitHub Actions workflow.
 - Injects environment variables in a format compatible with most shells.
 - Can fetch multiple secrets at once.
 - Supports wildcards
