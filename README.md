@@ -35,7 +35,10 @@ steps:
   - Empty string can be used ONLY IF you are using a self-hosted GitHub Actions Runner on AWS EC2 instances with an IAM instance profile attached (should have the required [AWS Secrets Manager permissions](#iam-policy)).
 - `aws-secret-access-key`
   - Corresponding Secret Access Key of the IAM user.
-  - Empty string can be used ONLY IF you are using a self-hosted GitHub Actions Runner on AWS EC2 instances with an IAM instance profile attached (should have the required [AWS Secrets Manager permissions](#iam-policy)).
+  - Empty string can be used ONLY IF you are using a self-hosted GitHub Actions Runner on AWS EC2 instances with an IAM instance profile attached (should have the required [AWS Secrets Manager permissions](#iam-policy))
+- `aws-session-token`
+  - Corresponding Session Token for the IAM user's current session
+  - Optional
 - `aws-region`
   - AWS region code which has your AWS Secrets Manager secrets.
   - Example: `us-east-1`.
