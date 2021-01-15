@@ -8,7 +8,7 @@ const inputSecretNames: string[] = [...new Set(core.getInput(Inputs.SECRETS).spl
 // Check if any secret name contains a wildcard '*'
 const hasWildcard: boolean = inputSecretNames.some(secretName => secretName.includes('*'))
 const shouldParseJSON = (core.getInput(Inputs.PARSE_JSON).trim().toLowerCase() === 'true')
-let AWSConfig: any = {
+const AWSConfig: any = {
   accessKeyId: core.getInput(Inputs.AWS_ACCESS_KEY_ID),
   secretAccessKey: core.getInput(Inputs.AWS_SECRET_ACCESS_KEY),
   region: core.getInput(Inputs.AWS_REGION)
