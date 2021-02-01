@@ -8,6 +8,9 @@ inputs:
   aws-secret-access-key:
     description: 'Corresponding Secret Access Key of the IAM user with the required AWS Secrets Manager permissions'
     required: true
+  aws-session-token:
+    description: '(Optional) Corresponding Session Token of the IAM user session with the required AWS Secrets Manager permissions'
+    required: false
   aws-region:
     description: 'The region of AWS Secrets Manager which contains your secrets (e.g.: us-east-1)'
     required: true
