@@ -1,6 +1,6 @@
 # AWS Secrets Manager GitHub Action
-[![Tests](https://github.com/action-factory/aws-secrets-manager-action/workflows/Tests/badge.svg?branch=master)](https://github.com/action-factory/aws-secrets-manager-action/actions?query=workflow%3A%22Tests%22)
-[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/action-factory/aws-secrets-manager-action/blob/master/LICENSE)
+[![Tests](https://github.com/abhilash1in/aws-secrets-manager-action/workflows/Tests/badge.svg?branch=master)](https://github.com/abhilash1in/aws-secrets-manager-action/actions?query=workflow%3A%22Tests%22)
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/abhilash1in/aws-secrets-manager-action/blob/master/LICENSE)
 
 GitHub Action to fetch secrets from AWS Secrets Manager and inject them as environment variables into your GitHub Actions workflow. 
 
@@ -17,7 +17,7 @@ For example:
 ```yaml
 steps:
 - name: Read secrets from AWS Secrets Manager into environment variables
-  uses: action-factory/aws-secrets-manager-action@v1.0.1
+  uses: abhilash1in/aws-secrets-manager-action@v1.0.1
   with:
     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -127,7 +127,7 @@ The `aws-access-key-id` and `aws-secret-access-key` provided by you should belon
 Here `us-east-1` is the region code which has the secrets, `000000000000` is your [AWS account ID](https://console.aws.amazon.com/billing/home?#/account) and `mySecretID` is the ID of your secret (usually different from a secret name, refer to AWS Secrets Manager console for the exact ID).
 
 ## Contributing
-We would love for you to contribute to [`@action-factory/aws-secrets-manager-action`](https://github.com/action-factory/aws-secrets-manager-action). [Issues](https://github.com/action-factory/aws-secrets-manager-action/issues) and [Pull Requests](https://github.com/action-factory/aws-secrets-manager-action/pulls) are welcome!
+We would love for you to contribute to [`@abhilash1in/aws-secrets-manager-action`](https://github.com/abhilash1in/aws-secrets-manager-action). [Issues](https://github.com/abhilash1in/aws-secrets-manager-action/issues) and [Pull Requests](https://github.com/abhilash1in/aws-secrets-manager-action/pulls) are welcome!
 
 ## License
-The scripts and documentation in this project are released under the [MIT License](https://github.com/action-factory/aws-secrets-manager-action/blob/master/LICENSE).
+The scripts and documentation in this project are released under the [MIT License](https://github.com/abhilash1in/aws-secrets-manager-action/blob/master/LICENSE).
