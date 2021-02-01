@@ -8,7 +8,7 @@ const inputSecretNames: string[] = [...new Set(core.getInput(Inputs.SECRETS).spl
 // Check if any secret name contains a wildcard '*'
 const hasWildcard: boolean = inputSecretNames.some(secretName => secretName.includes('*'))
 const shouldParseJSON = (core.getInput(Inputs.PARSE_JSON).trim().toLowerCase() === 'true')
-const AWSConfig: any = {
+const AWSConfig = {
   accessKeyId: core.getInput(Inputs.AWS_ACCESS_KEY_ID),
   secretAccessKey: core.getInput(Inputs.AWS_SECRET_ACCESS_KEY),
   region: core.getInput(Inputs.AWS_REGION)
@@ -16,7 +16,7 @@ const AWSConfig: any = {
 
 const awsSessionToken = core.getInput(Inputs.AWS_SESSION_TOKEN)
 if (awsSessionToken) {
-  AWSConfig.sessionToken = awsSessionToken
+  AWSConfig['sessionToken'] = awsSessionToken
 }
 
 const getSecretsManagerClient = (config): SecretsManager => new SecretsManager(config)
