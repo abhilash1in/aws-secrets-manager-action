@@ -38,7 +38,7 @@ export const flattenJSONObject = (data: Record<string, any>): Record<string, any
       let isEmpty = true
       for (const p in cur) {
         isEmpty = false
-        recurse(cur[p], prop ? prop + '.' + p : p)
+        recurse(cur[p], prop ? prop + '_' + p : p)
       }
       if (isEmpty && prop)
         result[prop] = {}

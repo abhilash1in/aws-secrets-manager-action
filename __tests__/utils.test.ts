@@ -21,7 +21,7 @@ test('Valid JSON object', () => {
 })
 
 test('Valid JSON object string test', () => {
-    expect(flattenJSONObject({"foo": {"bar": "baz"}})).toMatchObject({"foo.bar": "baz"})
+    expect(flattenJSONObject({"foo": {"bar": "baz"}})).toMatchObject({"foo_bar": "baz"})
 })
 
 test('FilterBy test', () => {
