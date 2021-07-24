@@ -17,7 +17,7 @@ For example:
 ```yaml
 steps:
 - name: Read secrets from AWS Secrets Manager into environment variables
-  uses: abhilash1in/aws-secrets-manager-action@v1.0.1
+  uses: abhilash1in/aws-secrets-manager-action@v1.1.0
   with:
     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
