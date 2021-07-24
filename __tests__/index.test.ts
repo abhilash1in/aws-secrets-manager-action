@@ -59,7 +59,7 @@ test('Get Secret Value Map: parse=false, plain-text value', () => {
 test('Get Secret Value Map: parse=true, JSON string value', () => {
   expect.assertions(1)
   return getSecretValueMap(secretsManagerClient, 'my_secret_2', true).then(secretValueMap => {
-    expect(secretValueMap).toMatchObject({ 'my_secret_2.foo': 'bar' })
+    expect(secretValueMap).toMatchObject({ 'my_secret_2_foo': 'bar' })
   })
 })
 
@@ -73,7 +73,7 @@ test('Get Secret Value Map: parse=false, JSON string value', () => {
 test('Get Secret Value Map: parse=true, Base64 encoded JSON string value', () => {
   expect.assertions(1)
   return getSecretValueMap(secretsManagerClient, 'my/secret/3', true).then(secretValueMap => {
-    expect(secretValueMap).toMatchObject({ 'my/secret/3.foo': 'bar' })
+    expect(secretValueMap).toMatchObject({ 'my/secret/3_foo': 'bar' })
   })
 })
 
