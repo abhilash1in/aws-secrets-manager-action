@@ -1,8 +1,7 @@
 import * as core from '@actions/core'
 
 import { Inputs } from './constants'
-import { getSecretsManagerClient, getSecretNamesToFetch, getSecretValueMap } from './awsUtils'
-import { injectSecretValueMapToEnvironment } from './utils'
+import { getSecretsManagerClient, getSecretNamesToFetch, fetchAndInject } from './awsUtils'
 
 // secretNames input string is a new line separated list of secret names. Take distinct secret names.
 const inputSecretNames: string[] = [...new Set(core.getMultilineInput(Inputs.SECRETS))]
@@ -13,7 +12,7 @@ const hasWildcard: boolean = inputSecretNames.some(secretName => secretName.incl
 const shouldParseJSON = core.getBooleanInput(Inputs.PARSE_JSON)
 
 const AWSConfig = {}
-if(core.getInput(Inputs.AWS_REGION) !== '') {
+if (core.getInput(Inputs.AWS_REGION) !== '') {
   AWSConfig['region'] = core.getInput(Inputs.AWS_REGION)
 }
 
@@ -23,26 +22,11 @@ if (hasWildcard) {
   core.debug('Found wildcard secret names')
   getSecretNamesToFetch(secretsManagerClient, inputSecretNames)
     .then(secretNamesToFetch => {
-      core.debug(`Found ${secretNamesToFetch.length} secrets to fetch: ${secretNamesToFetch}`)
-      secretNamesToFetch.forEach((secretName) => {
-        core.debug(`Fetching ${secretName}`)
-        return getSecretValueMap(secretsManagerClient, secretName, shouldParseJSON).then(map => {
-          injectSecretValueMapToEnvironment(map)
-        })
-      })
+      fetchAndInject(secretsManagerClient, secretNamesToFetch, shouldParseJSON)
     })
     .catch(err => {
       core.setFailed(`Action failed with error: ${err}`)
     })
 } else {
-  inputSecretNames.forEach((secretName) => {
-    core.debug(`Fetching ${secretName}`)
-    getSecretValueMap(secretsManagerClient, secretName, shouldParseJSON)
-      .then(map => {
-        injectSecretValueMapToEnvironment(map)
-      })
-      .catch(err => {
-        core.setFailed(`Action failed with error: ${err}`)
-      })
-  })
+  fetchAndInject(secretsManagerClient, inputSecretNames, shouldParseJSON)
 }

@@ -1,9 +1,17 @@
-import { SecretsManager } from 'aws-sdk'
-import { flattenJSONObject, isJSONObjectString, filterBy } from './utils'
+import * as core from '@actions/core'
+import { AWSError, SecretsManager } from 'aws-sdk'
+import { GetSecretValueResponse } from 'aws-sdk/clients/secretsmanager'
+import { PromiseResult } from 'aws-sdk/lib/request'
+import { flattenJSONObject, isJSONObjectString, filterBy, injectSecretValueMapToEnvironment } from './utils'
 
-const getSecretsManagerClient = (config): SecretsManager => new SecretsManager(config)
-const getSecretValue = (secretsManagerClient: SecretsManager, secretName: string) =>
-  secretsManagerClient.getSecretValue({ SecretId: secretName }).promise()
+const getSecretsManagerClient = (config: Record<string, any>): SecretsManager => new SecretsManager(config)
+
+const getSecretValue = (secretsManagerClient: SecretsManager, secretName: string):
+  Promise<PromiseResult<GetSecretValueResponse, AWSError>> => {
+  core.debug(`Fetching '${secretName}'`)
+  return secretsManagerClient.getSecretValue({ SecretId: secretName }).promise()
+}
+
 const listSecretsPaginated = (secretsManagerClient, nextToken) =>
   secretsManagerClient.listSecrets({ NextToken: nextToken }).promise()
 
@@ -122,10 +130,25 @@ const getSecretNamesToFetch =
     })
   }
 
+const fetchAndInject = (secretsManagerClient: SecretsManager,
+  secretNamesToFetch: Array<string>, shouldParseJSON: boolean): void => {
+  core.debug(`Will fetch ${secretNamesToFetch.length} secrets: ${secretNamesToFetch}`)
+  secretNamesToFetch.forEach((secretName) => {
+    getSecretValueMap(secretsManagerClient, secretName, shouldParseJSON)
+      .then(map => {
+        injectSecretValueMapToEnvironment(map)
+      })
+      .catch(err => {
+        core.error(err)
+        core.setFailed(`Failed to fetch '${secretName}'`)
+      })
+  })
+}
 export {
   getSecretsManagerClient,
   getSecretValue,
   listSecrets,
   getSecretValueMap,
-  getSecretNamesToFetch
+  getSecretNamesToFetch,
+  fetchAndInject
 }
