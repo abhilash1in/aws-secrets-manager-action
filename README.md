@@ -1,5 +1,5 @@
 # AWS Secrets Manager GitHub Action
-[![Tests](https://github.com/abhilash1in/aws-secrets-manager-action/workflows/Tests/badge.svg?branch=master)](https://github.com/abhilash1in/aws-secrets-manager-action/actions?query=workflow%3A%22Tests%22)
+[![Tests](https://github.com/abhilash1in/aws-secrets-manager-action/actions/workflows/tests.yml/badge.svg)](https://github.com/abhilash1in/aws-secrets-manager-action/actions/workflows/tests.yml)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/abhilash1in/aws-secrets-manager-action/blob/master/LICENSE)
 
 GitHub Action to fetch secrets from AWS Secrets Manager and inject them as environment variables into your GitHub Actions workflow. 
