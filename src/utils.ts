@@ -69,11 +69,11 @@ export const injectSecretValueMapToEnvironment = (secretValueMap: Record<string,
     const secretNamePOSIX = getPOSIXString(secretName)
     if (secretName !== secretNamePOSIX) {
       core.warning('One of the secrets has a name that is not POSIX compliant and hence cannot directly \
-  be used/injected as an environment variable name. Therefore, it will be transformed into a POSIX compliant \
-  environment variable name. Enable GitHub Actions Debug Logging \
-  (https://docs.github.com/en/free-pro-team@latest/actions/managing-workflow-runs/enabling-debug-logging) to \
-  see the transformed environment variable name.\nPOSIX compliance: environment variable names can only contain \
-  upper case letters, digits and underscores. It cannot begin with a digit.')
+be used/injected as an environment variable name. Therefore, it will be transformed into a POSIX compliant \
+environment variable name. Enable GitHub Actions Debug Logging \
+(https://docs.github.com/en/free-pro-team@latest/actions/managing-workflow-runs/enabling-debug-logging) to \
+see the transformed environment variable name.\nPOSIX compliance: environment variable names can only contain \
+upper case letters, digits and underscores. It cannot begin with a digit.')
       core.debug(`Secret name '${secretName}' is not POSIX compliant. It will be transformed to '${secretNamePOSIX}'.`)
     }
     core.debug(`Injecting environment variable '${secretNamePOSIX}'.`)
