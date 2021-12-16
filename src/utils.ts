@@ -1,3 +1,5 @@
+import * as core from '@actions/core'
+
 /* Validate a possible object i.e., o = { "a": 2 } */
 export const isJSONObject = (o: Record<string, any>): boolean =>
   !!o && (typeof o === 'object') && !Array.isArray(o) &&
@@ -58,8 +60,7 @@ export const getPOSIXString = (data: string): string => {
   return data.replace(/[^a-zA-Z0-9_]/g, '_').toUpperCase()
 }
 
-export const injectSecretValueMapToEnvironment = (secretValueMap: Record<string, any>,
-  core: typeof import('@actions/core')): void => {
+export const injectSecretValueMapToEnvironment = (secretValueMap: Record<string, any>): void => {
   for (const secretName in secretValueMap) {
     const secretValue: string = secretValueMap[secretName]
     core.setSecret(secretValue)
