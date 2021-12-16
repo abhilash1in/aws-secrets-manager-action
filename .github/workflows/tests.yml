@@ -32,9 +32,10 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ secrets.AWS_REGION }}
+        aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
     - uses: ./
       with:
+        aws-region: ${{ secrets.AWS_SECRETS_REGION }}
         secrets: '*secret*'
         parse-json: true
 
@@ -50,8 +51,9 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ secrets.AWS_REGION }}
+        aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
     - uses: abhilash1in/aws-secrets-manager-action@v2.0.0-rc1
       with:
+        aws-region: ${{ secrets.AWS_SECRETS_REGION }}
         secrets: 'my_secret*'
         parse-json: true

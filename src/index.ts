@@ -12,7 +12,12 @@ const hasWildcard: boolean = inputSecretNames.some(secretName => secretName.incl
 
 const shouldParseJSON = core.getBooleanInput(Inputs.PARSE_JSON)
 
-const secretsManagerClient = getSecretsManagerClient({})
+const AWSConfig = {}
+if(core.getInput(Inputs.AWS_REGION) !== '') {
+  AWSConfig['region'] = core.getInput(Inputs.AWS_REGION)
+}
+
+const secretsManagerClient = getSecretsManagerClient(AWSConfig)
 
 if (hasWildcard) {
   core.debug('Found wildcard secret names')
@@ -22,7 +27,7 @@ if (hasWildcard) {
       secretNamesToFetch.forEach((secretName) => {
         core.debug(`Fetching ${secretName}`)
         getSecretValueMap(secretsManagerClient, secretName, shouldParseJSON).then(map => {
-          injectSecretValueMapToEnvironment(map, core)
+          injectSecretValueMapToEnvironment(map)
         })
       })
     })
@@ -34,7 +39,7 @@ if (hasWildcard) {
     core.debug(`Fetching ${secretName}`)
     getSecretValueMap(secretsManagerClient, secretName, shouldParseJSON)
       .then(map => {
-        injectSecretValueMapToEnvironment(map, core)
+        injectSecretValueMapToEnvironment(map)
       })
       .catch(err => {
         core.setFailed(`Action failed with error: ${err}`)

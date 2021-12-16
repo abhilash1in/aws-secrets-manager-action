@@ -2,6 +2,9 @@ name: 'AWS Secrets Manager Action'
 author: 'Abhilash Kishore'
 description: 'Use secrets from AWS Secrets Manager as environment variables in your GitHub Actions workflow'
 inputs:
+  aws-region:
+    description: 'The region of AWS Secrets Manager which contains your secrets (e.g.: us-east-1)'
+    required: false
   secrets:
     description: 'List of secret names you want to fetch secret values for'
     required: true
