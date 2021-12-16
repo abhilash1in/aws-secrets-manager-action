@@ -15,9 +15,12 @@ const shouldParseJSON = core.getBooleanInput(Inputs.PARSE_JSON)
 const secretsManagerClient = getSecretsManagerClient({})
 
 if (hasWildcard) {
+  core.debug('Found wildcard secret names')
   getSecretNamesToFetch(secretsManagerClient, inputSecretNames)
     .then(secretNamesToFetch => {
+      core.debug(`Found ${secretNamesToFetch.length} secrets to fetch: ${secretNamesToFetch}`)
       secretNamesToFetch.forEach((secretName) => {
+        core.debug(`Fetching ${secretName}`)
         getSecretValueMap(secretsManagerClient, secretName, shouldParseJSON).then(map => {
           injectSecretValueMapToEnvironment(map, core)
         })
@@ -28,6 +31,7 @@ if (hasWildcard) {
     })
 } else {
   inputSecretNames.forEach((secretName) => {
+    core.debug(`Fetching ${secretName}`)
     getSecretValueMap(secretsManagerClient, secretName, shouldParseJSON)
       .then(map => {
         injectSecretValueMapToEnvironment(map, core)
