@@ -12,9 +12,6 @@ const hasWildcard: boolean = inputSecretNames.some(secretName => secretName.incl
 const shouldParseJSON = core.getBooleanInput(Inputs.PARSE_JSON)
 
 const AWSConfig = {}
-if (core.getInput(Inputs.AWS_REGION) !== '') {
-  AWSConfig['region'] = core.getInput(Inputs.AWS_REGION)
-}
 
 const secretsManagerClient = getSecretsManagerClient(AWSConfig)
 
