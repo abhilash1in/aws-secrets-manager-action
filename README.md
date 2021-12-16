@@ -14,6 +14,8 @@ For example:
 - If your secret name is `dev/foo`, value is `{ "bar": "baz" }` and `parse-json` is set to `true`, the injected environment variable name will be `DEV_FOO_BAR` (and value will be `baz`).
 
 ## Usage
+> Refer [Configure AWS Credentials](https://github.com/aws-actionsconfigure-aws-credentials) for AWS recommended best practices on how to configure AWS credentials for use with GitHub Actions.
+
 ```yaml
 steps:
 - name: Configure AWS Credentials
@@ -34,8 +36,6 @@ steps:
 - name: Check if env variable is set after fetching secrets
   run: if [ -z ${MY_SECRET_1+x} ]; then echo "MY_SECRET_1 is unset"; else echo "MY_SECRET_1 is set to '$MY_SECRET_1'"; fi
 ```
-
-> **Configure AWS Credentials**: Refer [Configure AWS Credentials](https://github.com/aws-actions/configure-aws-credentials) for AWS recommended best practices on how to configure AWS credentials for use with GitHub Actions.
 
 - `secrets`: 
   - List of secret names to be retrieved.
