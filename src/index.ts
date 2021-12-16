@@ -26,7 +26,7 @@ if (hasWildcard) {
       core.debug(`Found ${secretNamesToFetch.length} secrets to fetch: ${secretNamesToFetch}`)
       secretNamesToFetch.forEach((secretName) => {
         core.debug(`Fetching ${secretName}`)
-        getSecretValueMap(secretsManagerClient, secretName, shouldParseJSON).then(map => {
+        return getSecretValueMap(secretsManagerClient, secretName, shouldParseJSON).then(map => {
           injectSecretValueMapToEnvironment(map)
         })
       })
