@@ -16,12 +16,16 @@ For example:
 ## Usage
 ```yaml
 steps:
-- name: Read secrets from AWS Secrets Manager into environment variables
-  uses: abhilash1in/aws-secrets-manager-action@v1.1.0
+- name: Configure AWS Credentials
+  uses: aws-actions/configure-aws-credentials@v1
   with:
     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     aws-region: ${{ secrets.AWS_REGION }}
+
+- name: Read secrets from AWS Secrets Manager into environment variables
+  uses: abhilash1in/aws-secrets-manager-action@v2.0.0-rc1
+  with:
     secrets: |
       my_secret_1
       app1/dev/*
@@ -30,18 +34,9 @@ steps:
 - name: Check if env variable is set after fetching secrets
   run: if [ -z ${MY_SECRET_1+x} ]; then echo "MY_SECRET_1 is unset"; else echo "MY_SECRET_1 is set to '$MY_SECRET_1'"; fi
 ```
-- `aws-access-key-id`
-  - Access Key ID of an IAM user with the required [AWS Secrets Manager permissions](#iam-policy).
-  - Empty string can be used ONLY IF you are using a self-hosted GitHub Actions Runner on AWS EC2 instances with an IAM instance profile attached (should have the required [AWS Secrets Manager permissions](#iam-policy)).
-- `aws-secret-access-key`
-  - Corresponding Secret Access Key of the IAM user.
-  - Empty string can be used ONLY IF you are using a self-hosted GitHub Actions Runner on AWS EC2 instances with an IAM instance profile attached (should have the required [AWS Secrets Manager permissions](#iam-policy)).
-- `aws-session-token`
-  - Corresponding Session Token for the IAM user's current session.
-  - Optional (required ONLY IF you are using [AWS IAM temporary credentials](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_use-resources.html)).
-- `aws-region`
-  - AWS region code which has your AWS Secrets Manager secrets.
-  - Example: `us-east-1`.
+
+> **Configure AWS Credentials**: Refer [Configure AWS Credentials](https://github.com/aws-actions/configure-aws-credentials) for AWS recommended best practices on how to configure AWS credentials for use with GitHub Actions.
+
 - `secrets`: 
   - List of secret names to be retrieved.
   - Examples:
@@ -70,8 +65,8 @@ steps:
 | `false`      | `dev_foo` = `{ "bar": "baz" }`                   | `DEV_FOO` = `{ "bar": "baz" }`                      | Not parsed                                                                              |
 
 #### Note:
-- `${{ secrets.YOUR_SECRET_NAME }}` refers to [GitHub Secrets](https://help.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets). Create the required secrets (e.g.: AWS credentials) in your GitHub repository before using this GitHub Action.
-- If your secret name contains any characters other than upper case letters, digits and underscores, it will not be used directly as the environment variable name. Rather, it will be transformed into a string that only contains upper case letters, digits and underscores. 
+- `${{ secrets.AWS_ACCESS_KEY_ID }}`, `${{ secrets.AWS_SECRET_ACCESS_KEY }}` and `${{ secrets.AWS_REGION }}` refers to [GitHub Secrets](https://help.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets). Create the required secrets in your GitHub repository before using them in this GitHub Action.
+- If your AWS Secrets Manager secret name contains any characters other than upper case letters, digits and underscores, it will not be used directly as the environment variable name. Rather, it will be transformed into a string that only contains upper case letters, digits and underscores. Refer the table above for examples.
 
 ## Features
 - Can fetch secrets from AWS Secrets Manager and inject them into environment variables which can be used in subsequent steps in your GitHub Actions workflow. 

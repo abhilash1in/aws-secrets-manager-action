@@ -1,7 +1,5 @@
-import { getSecretValue, listSecrets, getSecretValueMap, getSecretNamesToFetch } from '../src/index'
-import { getPOSIXString } from '../src/utils'
+import { getSecretValue, listSecrets, getSecretValueMap, getSecretNamesToFetch } from '../src/awsUtils'
 import { SecretsManager } from 'aws-sdk'
-import { Inputs } from '../src/constants'
 import { resolve } from "path"
 import { config } from "dotenv"
 
@@ -9,15 +7,7 @@ jest.mock('aws-sdk')
 
 config({ path: resolve(__dirname, "../.env") })
 
-// In case we want to make actual AWS calls during integration tests instead of jest mock calls
-const AWSConfig = {
-  accessKeyId: process.env[getPOSIXString(Inputs.AWS_ACCESS_KEY_ID)],
-  secretAccessKey: process.env[getPOSIXString(Inputs.AWS_SECRET_ACCESS_KEY)],
-  region: process.env[getPOSIXString(Inputs.AWS_REGION)]
-}
-
-const secretsManagerClient = new SecretsManager(AWSConfig)
-
+const secretsManagerClient = new SecretsManager({})
 
 test('Fetch Secret Value: Valid Secret Name', () => {
   expect.assertions(2)
