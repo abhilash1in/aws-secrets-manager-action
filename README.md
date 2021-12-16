@@ -112,14 +112,14 @@ The `aws-access-key-id` and `aws-secret-access-key` provided by you should belon
             ],
             "Effect": "Allow",
             "Resource": [
-              "arn:aws:secretsmanager:us-east-1:000000000000:secret:*",
-              "arn:aws:secretsmanager:*:000000000000:secret:mySecretID"
+              "arn:aws:secretsmanager:*:000000000000:secret:*",
+              "arn:aws:secretsmanager:us-east-1:000000000000:secret:mySecretID"
             ]
         }
     ]
 }
 ```
-Here `us-east-1` is the region code which has the secrets, `000000000000` is your [AWS account ID](https://console.aws.amazon.com/billing/home?#/account) and `mySecretID` is the ID of your secret (usually different from a secret name, refer to AWS Secrets Manager console for the exact ID).
+Here `000000000000` is your [AWS account ID](https://console.aws.amazon.com/billing/home?#/account), `us-east-1` is the AWS region code which has the secret(s) and `mySecretID` is the ID of your secret (usually different from a secret name). Please refer your AWS Secrets Manager console for the exact resource ARN.
 
 ## Contributing
 We would love for you to contribute to [`@abhilash1in/aws-secrets-manager-action`](https://github.com/abhilash1in/aws-secrets-manager-action). [Issues](https://github.com/abhilash1in/aws-secrets-manager-action/issues) and [Pull Requests](https://github.com/abhilash1in/aws-secrets-manager-action/pulls) are welcome!
