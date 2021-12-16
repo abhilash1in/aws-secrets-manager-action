@@ -8,6 +8,7 @@ on:
     branches:
       - master
     tags:
+      - '*'
 
 jobs:
   # unit tests
@@ -21,7 +22,7 @@ jobs:
   integration-test-latest:
     # Run only on 'push' or 'pull_request within same repository (not from a fork)'
     # since workflows triggered for PRs from a fork will not have access to GitHub secrets
-    if: ${{ github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.base.repo.html_url == github.event.pull_request.head.repo.html_url) }}
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.base.repo.html_url == github.event.pull_request.head.repo.html_url) }}
     needs: [unit-tests]
     runs-on: ubuntu-latest
     steps:
@@ -40,7 +41,7 @@ jobs:
   integration-test-release:
     # Run only on 'push' or 'pull_request within same repository (not from a fork)'
     # since workflows triggered for PRs from a fork will not have access to GitHub secrets
-    if: ${{ github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.base.repo.html_url == github.event.pull_request.head.repo.html_url) }}
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.base.repo.html_url == github.event.pull_request.head.repo.html_url) }}
     needs: [unit-tests]
     runs-on: ubuntu-latest
     steps:
