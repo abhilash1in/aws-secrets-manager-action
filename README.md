@@ -14,7 +14,7 @@ For example:
 - If your secret name is `dev/foo`, value is `{ "bar": "baz" }` and `parse-json` is set to `true`, the injected environment variable name will be `DEV_FOO_BAR` (and value will be `baz`).
 
 ## Usage
-> Refer [Configure AWS Credentials](https://github.com/aws-actionsconfigure-aws-credentials) for AWS recommended best practices on how to configure AWS credentials for use with GitHub Actions.
+> Refer [Configure AWS Credentials](https://github.com/aws-actions/configure-aws-credentials) for AWS recommended best practices on how to configure AWS credentials for use with GitHub Actions.
 
 ```yaml
 steps:
