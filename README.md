@@ -26,7 +26,7 @@ steps:
     aws-region: ${{ secrets.AWS_REGION }}
 
 - name: Read secrets from AWS Secrets Manager into environment variables
-  uses: abhilash1in/aws-secrets-manager-action@v2.0.0-rc1
+  uses: abhilash1in/aws-secrets-manager-action@v2.0.0
   with:
     secrets: |
       my_secret_1
