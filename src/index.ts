@@ -15,6 +15,8 @@ const AWSConfig = {}
 
 const secretsManagerClient = getSecretsManagerClient(AWSConfig)
 
+const disableWarnings = core.getBooleanInput(Inputs.DISABLE_WARNINGS)
+
 if (hasWildcard) {
   core.debug('Found wildcard secret names')
   getSecretNamesToFetch(secretsManagerClient, inputSecretNames)
