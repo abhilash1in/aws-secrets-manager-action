@@ -64,6 +64,9 @@ steps:
 | `true`       | `foo` = `{ "bar": "baz" }`<br>`ham` = `eggs`     | `FOO_BAR` = `baz` AND<br>`ham` = `eggs`             | If multiple secrets, values that can be parsed into a JSON will be parsed and flattened |
 | `false`      | `dev_foo` = `{ "bar": "baz" }`                   | `DEV_FOO` = `{ "bar": "baz" }`                      | Not parsed                                                                              |
 
+- `disable-warnings`
+  - If `disable-warnings: true`, warnings regarding POSIX compliance in GitHub Actions output will be suppressed.
+
 #### Note:
 - `${{ secrets.AWS_ACCESS_KEY_ID }}`, `${{ secrets.AWS_SECRET_ACCESS_KEY }}` and `${{ secrets.AWS_REGION }}` refers to [GitHub Secrets](https://help.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets). Create the required secrets in your GitHub repository before using them in this GitHub Action.
 - If your AWS Secrets Manager secret name contains any characters other than upper case letters, digits and underscores, it will not be used directly as the environment variable name. Rather, it will be transformed into a string that only contains upper case letters, digits and underscores. Refer the table above for examples.
