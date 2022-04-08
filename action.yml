@@ -9,6 +9,10 @@ inputs:
     description: 'If true and secret values are stringified JSON objects, they will be parsed and flattened. Its key value pairs will become individual secrets'
     required: false
     default: 'false'
+  disable-warnings:
+    description: 'If true, disable annotation warnings in the GitHub Actions output.'
+    required: false
+    default: 'false'
 runs:
   using: 'node12'
   main: 'dist/index.js'
