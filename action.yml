@@ -9,6 +9,12 @@ inputs:
     description: 'If true and secret values are stringified JSON objects, they will be parsed and flattened. Its key value pairs will become individual secrets'
     required: false
     default: 'false'
+  secret-prefix:
+    description: >-
+     The prefix of the secret name taking standard naming separated by /, ie. dev/my_secret.
+     This prefix is typically used to denote the environment for the secret, ie, dev, prd.
+    required: false
+    default: ''
 runs:
   using: 'node12'
   main: 'dist/index.js'
