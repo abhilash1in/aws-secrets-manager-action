@@ -7,6 +7,9 @@ jest.mock('aws-sdk')
 
 config({ path: resolve(__dirname, '../.env') })
 
+const NO_PREFIXED_EXPECTED = {'my_secret_1': 'test-value-1', 'my_secret_2_foo': 'bar', 'my/secret/3_foo': 'bar'}
+const PREFIXED_EXPECTED = {'my_prefixed_1': 'prefixed-test-value-1', 'my_prefixed_2_foo': 'bar', 'my/prefixed/3_foo': 'bar'}
+
 const secretsManagerClient = new SecretsManager({})
 
 test ('Construct secret name: with secretPrefix', () => {
@@ -58,69 +61,50 @@ test('Get Secret Names To Fetch: Multiple Wild Card Names with secretPrefix', ()
 })
 
 test('Get Secret Value Maps: Single Secret without secretPrefix', () => {
-  return getSecretValueMaps(secretsManagerClient, ['my_secret_1'], false).then(maps => {
-    expect(maps).toEqual(new Map([['my_secret_1', 'test-value-1']]))
-  })
+  return getSecretValueMaps(secretsManagerClient, ['my_secret_1'], false).then(maps =>
+    expect(maps).toEqual({'my_secret_1': 'test-value-1'})
+  )
 })
 
 test('Get Secret Value Maps: Multiple Secrets without secretPrefix', () => {
   expect.assertions(1)
   return getSecretValueMaps(secretsManagerClient, ['my_secret_1', 'my_secret_2', 'my/secret/3'], true)
-    .then(maps => {
-      expect(maps).toEqual(
-        new Map([['my_secret_1', 'test-value-1'], ['my_secret_2_foo', 'bar'], ['my/secret/3_foo', 'bar']]))
-    })
+    .then(maps => expect(maps).toEqual(NO_PREFIXED_EXPECTED))
 })
 
 test('Get Secret Value Maps: Single Wild Card Name without secretPrefix', () => {
   expect.assertions(1)
-  return getSecretValueMaps(secretsManagerClient, ['*secret*'], true).then(maps => {
-    expect(maps).toEqual(
-      new Map([['my_secret_1', 'test-value-1'], ['my_secret_2_foo', 'bar'], ['my/secret/3_foo', 'bar']]))
-  })
+  return getSecretValueMaps(secretsManagerClient, ['*secret*'], true).then(maps =>
+    expect(maps).toEqual(NO_PREFIXED_EXPECTED))
 })
 
 test('Get Secret Value Maps: Multiple Wild Card Name without secretPrefix', () => {
   expect.assertions(1)
-  return getSecretValueMaps(secretsManagerClient, ['my*', 'my_prefixed*', 'invalid'], true).then(maps => {
-    expect(maps).toEqual(new Map([
-      ['my_secret_1', 'test-value-1'],
-      ['my_secret_2_foo', 'bar'],
-      ['my/secret/3_foo', 'bar']]))
-  })
+  return getSecretValueMaps(secretsManagerClient, ['my*', 'my_prefixed*', 'invalid'], true).then(maps =>
+    expect(maps).toEqual(NO_PREFIXED_EXPECTED))
 })
 
 test('Get Secret Value Maps: Single Secret with secretPrefix', () => {
   expect.assertions(1)
-  return getSecretValueMaps(secretsManagerClient, ['my_prefixed_1'], false, 'dev').then(maps => {
-    expect(maps).toEqual(new Map([['my_prefixed_1', 'prefixed-test-value-1']]))
-  })
+  return getSecretValueMaps(secretsManagerClient, ['my_prefixed_1'], false, 'dev').then(maps =>
+    expect(maps).toEqual({'my_prefixed_1': 'prefixed-test-value-1'})
+  )
 })
 
 test('Get Secret Value Maps: Multiple Secrets with secretPrefix', () => {
   expect.assertions(1)
   return getSecretValueMaps(secretsManagerClient, ['my_prefixed_1', 'my_prefixed_2', 'my/prefixed/3'], true, 'dev')
-    .then(maps => expect(maps).toEqual(new Map([
-      ['my_prefixed_1', 'prefixed-test-value-1'],
-      ['my_prefixed_2_foo', 'bar'],
-      ['my/prefixed/3_foo', 'bar']]))
-    )
+    .then(maps => expect(maps).toEqual(PREFIXED_EXPECTED))
 })
 
 test('Get Secret Value Maps: Single Wild Card Name with secretPrefix', () => {
   expect.assertions(1)
-  return getSecretValueMaps(secretsManagerClient, ['*prefixed*'], true, 'dev').then(maps => {
-    expect(maps).toEqual(
-      new Map([['my_prefixed_1', 'prefixed-test-value-1'], ['my_prefixed_2_foo', 'bar'], ['my/prefixed/3_foo', 'bar']]))
-  })
+  return getSecretValueMaps(secretsManagerClient, ['*prefixed*'], true, 'dev').then(maps => 
+    expect(maps).toEqual(PREFIXED_EXPECTED))
 })
 
 test('Get Secret Value Maps: Multiple Wild Card Name with secretPrefix', () => {
   expect.assertions(1)
   return getSecretValueMaps(secretsManagerClient, ['my*', 'my_prefixed*', 'invalid'], true, 'dev')
-    .then(maps => expect(maps).toEqual(new Map([
-      ['my_prefixed_1', 'prefixed-test-value-1'],
-      ['my_prefixed_2_foo', 'bar'],
-      ['my/prefixed/3_foo', 'bar']]))
-    )
+    .then(maps => expect(maps).toEqual(PREFIXED_EXPECTED))
 })
