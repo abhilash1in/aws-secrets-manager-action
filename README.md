@@ -1,8 +1,10 @@
 # AWS Secrets Manager GitHub Action
-[![Tests](https://github.com/abhilash1in/aws-secrets-manager-action/actions/workflows/tests.yml/badge.svg)](https://github.com/abhilash1in/aws-secrets-manager-action/actions/workflows/tests.yml)
-[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/abhilash1in/aws-secrets-manager-action/blob/master/LICENSE)
+[![Tests](https://github.com/suriyanto/aws-secrets-manager-action/actions/workflows/tests.yml/badge.svg)](https://github.com/suriyanto/aws-secrets-manager-action/actions/workflows/tests.yml)
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/suriyanto/aws-secrets-manager-action/blob/master/LICENSE)
 
 GitHub Action to fetch secrets from AWS Secrets Manager and inject them as environment variables into your GitHub Actions workflow. 
+
+This actions is a fork from [abhilash1in/aws-secrets-manager-action](https://github.com/abhilash1in/aws-secrets-manager-action) with the addition for `secret-prefix` to support environment specific secrets.
 
 The injected environment variable names will only contain upper case letters, digits and underscores. It will not begin with a digit. 
 
@@ -26,11 +28,12 @@ steps:
     aws-region: ${{ secrets.AWS_REGION }}
 
 - name: Read secrets from AWS Secrets Manager into environment variables
-  uses: abhilash1in/aws-secrets-manager-action@v2.0.0
+  uses: suriyanto/aws-secrets-manager-action@v1
   with:
     secrets: |
       my_secret_1
       app1/dev/*
+    secret-prefix: dev
     parse-json: true
 
 - name: Check if env variable is set after fetching secrets
@@ -47,12 +50,24 @@ steps:
         my_secret_1
         my_secret_2
       ```
-    - To retrieve "all secrets having names that contain `dev`" or "begin with `app1/dev/`", use:
+    - To retrieve "all secrets having names that contain `app1`" or "begin with `app1/secret/`", use:
       ```yaml
       secrets: |
-        *dev*
-        app1/dev/*
+        *app1*
+        app1/secret/*
       ```
+
+- `secret-prefix`
+  - Specify prefix to be used for the secret name as defined in AWS Secrets Manager.
+  This prefix is typically used to denote the environment for the secret, ie, dev, prd.
+  The secrets will be looked up using the format of {secret-prefix}/{secret-name}.
+  - Examples:
+
+|   `secrets`   | `secret-prefix` |    AWS secret name to be fetched     | Injected Environment Variable |
+|---------------|-----------------|--------------------------------------|-------------------------------|
+| `my_secret_1` |     dev         |           `dev/my_secret_1`          |       `MY_SECRET_1`           |
+| `*secret*`    |     prd         | `prd/my_secret_1`, `prd/my_secret_2` | `MY_SECRET_1`, `MY_SECRET_2` |
+
 - `parse-json`
   - If `parse-json: true` and secret value is a **valid** stringified JSON object, it will be parsed and flattened. Each of the key value pairs in the flattened JSON object will become individual secrets. The original secret name will be used as a prefix.
   - Examples: 

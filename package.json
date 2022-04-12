@@ -1,17 +1,17 @@
 {
   "name": "aws-secrets-manager-action",
-  "version": "2.0.0",
-  "description": "Use secrets from AWS Secrets Manager as environment variables in your GitHub Actions workflow",
+  "version": "v1",
+  "description": "Use secrets from AWS Secrets Manager as environment variables in your GitHub Actions workflow with name prefix support",
   "main": "index.js",
   "scripts": {
     "lint": "eslint src/**",
     "lint:fix": "eslint src/** --fix",
     "package": "ncc build src/index.ts --license licenses.txt --source-map -o dist",
-    "test": "eslint src/** && jest --verbose --coverage=true"
+    "test": "npm run lint && jest --verbose --coverage=true"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/abhilash1in/aws-secrets-manager-action.git"
+    "url": "git+https://github.com/suriyanto/aws-secrets-manager-action.git"
   },
   "keywords": [
     "Github",
@@ -23,23 +23,23 @@
   "author": "Abhilash Kishore",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/abhilash1in/aws-secrets-manager-action/issues"
+    "url": "https://github.com/suriyanto/aws-secrets-manager-action/issues"
   },
-  "homepage": "https://github.com/abhilash1in/aws-secrets-manager-action#readme",
+  "homepage": "https://github.com/suriyanto/aws-secrets-manager-action#readme",
   "dependencies": {
-    "@actions/core": "^1.2.6",
-    "aws-sdk": "^2.792.0"
+    "@actions/core": "^1.6.0",
+    "aws-sdk": "^2.1111.0"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^4.7.0",
-    "@typescript-eslint/parser": "^4.7.0",
-    "@vercel/ncc": "^0.25.1",
-    "dotenv": "^8.2.0",
-    "eslint": "^7.13.0",
-    "eslint-plugin-spellcheck": "0.0.17",
-    "@types/jest": "^26.0.15",
-    "jest": "^26.6.3",
-    "ts-jest": "^26.4.4",
-    "typescript": "^4.0.5"
+    "@typescript-eslint/eslint-plugin": "^5.18.0",
+    "@typescript-eslint/parser": "^5.18.0",
+    "@vercel/ncc": "^0.33.3",
+    "dotenv": "^16.0.0",
+    "eslint": "^8.13.0",
+    "eslint-plugin-spellcheck": "0.0.19",
+    "@types/jest": "^27.4.1",
+    "jest": "^27.5.1",
+    "ts-jest": "^27.1.4",
+    "typescript": "4.6.2"
   }
 }

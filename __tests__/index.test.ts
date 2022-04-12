@@ -28,7 +28,8 @@ test('Fetch Secret Value: Invalid Secret Name', () => {
 test('List Secrets', () => {
   expect.assertions(1)
   return listSecrets(secretsManagerClient).then(secretNames => {
-    expect(secretNames.sort()).toEqual(['my_secret_1', 'my_secret_2', 'my/secret/3'].sort())
+    expect(secretNames.sort()).toEqual(['my_secret_1', 'my_secret_2', 'my/secret/3', 
+      'dev/my_prefixed_1', 'dev/my_prefixed_2', 'dev/my/prefixed/3'].sort())
   })
 })
 

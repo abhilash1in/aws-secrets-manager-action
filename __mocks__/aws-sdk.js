@@ -26,6 +26,24 @@ const mockSecrets = {
         VersionId: 'mock-version-id',
         Name: 'deleted_secret',
         DeletedDate: Date.now()
+    },
+    'dev/my_prefixed_1': {
+        ARN: 'arn:aws:mock-secretsmanager:mock-region:mock-account-id:secret:dev/my_prefixed_1-XXXXXX',
+        VersionId: 'mock-version-id',
+        Name: 'dev/my_prefixed_1',
+        SecretString: 'prefixed-test-value-1',
+    },
+    'dev/my_prefixed_2': {
+        ARN: 'arn:aws:mock-secretsmanager:mock-region:mock-account-id:secret:dev/my_prefixed_2-XXXXXX',
+        VersionId: 'mock-version-id',
+        Name: 'dev/my_prefixed_2',
+        SecretString: '{"foo" : "bar"}',
+    },
+    'dev/my/prefixed/3': {
+        ARN: 'arn:aws:mock-secretsmanager:mock-region:mock-account-id:secret:dev/my/prefixed/3-XXXXXX',
+        VersionId: 'mock-version-id',
+        Name: 'dev/my/prefixed/3',
+        SecretBinary: 'eyJmb28iIDogImJhciJ9',
     }
 }
 
