@@ -65,7 +65,7 @@ steps:
 | `false`      | `dev_foo` = `{ "bar": "baz" }`                   | `DEV_FOO` = `{ "bar": "baz" }`                      | Not parsed                                                                              |
 
 - `disable-warnings`
-  - If `disable-warnings: true`. the annotation warnings regarding posix compliance in GitHub Actions output will be supressed.
+  - If `disable-warnings: true`, warnings regarding POSIX compliance in GitHub Actions output will be suppressed.
 
 #### Note:
 - `${{ secrets.AWS_ACCESS_KEY_ID }}`, `${{ secrets.AWS_SECRET_ACCESS_KEY }}` and `${{ secrets.AWS_REGION }}` refers to [GitHub Secrets](https://help.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets). Create the required secrets in your GitHub repository before using them in this GitHub Action.
