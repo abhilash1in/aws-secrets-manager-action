@@ -9,7 +9,8 @@ const getSecretsManagerClient = (config: Record<string, any>): SecretsManager =>
 const getSecretValue = (secretsManagerClient: SecretsManager, secretName: string):
   Promise<PromiseResult<GetSecretValueResponse, AWSError>> => {
   core.debug(`Fetching '${secretName}'`)
-  return secretsManagerClient.getSecretValue({ SecretId: secretName }).promise()
+  
+  return core.setSecret(secretsManagerClient.getSecretValue({ SecretId: secretName }).promise())
 }
 
 const listSecretsPaginated = (secretsManagerClient, nextToken) =>
