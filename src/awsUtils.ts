@@ -15,32 +15,32 @@ const getSecretValue = (secretsManagerClient: SecretsManager, secretName: string
 const listSecretsPaginated = (secretsManagerClient, nextToken) =>
   secretsManagerClient.listSecrets({ NextToken: nextToken }).promise()
 
+const iterateSecrets = (resolver, secretsManagerClient: SecretsManager, allSecretNames: string[], nextToken = null) => {
+  listSecretsPaginated(secretsManagerClient, nextToken)
+    .then(res => {
+      // get all non-deleted secret names
+      res['SecretList'].forEach(secret => {
+        if (!('DeletedDate' in secret)) {
+          allSecretNames.push(secret['Name'])
+        }
+      })
+
+      // fetch nextToken if it exists, reset to null otherwise
+      if ('NextToken' in res) {
+        iterateSecrets(resolver, secretsManagerClient, allSecretNames, res['NextToken'])
+      } else {
+        resolver(allSecretNames)
+      }
+    })
+    .catch(err => {
+      throw err;
+    })
+}
+
 const listSecrets = (secretsManagerClient: SecretsManager): Promise<Array<string>> => {
   return new Promise<Array<string>>((resolve, reject) => {
-    let nextToken: string = null
     const allSecretNames: string[] = []
-    do {
-      listSecretsPaginated(secretsManagerClient, nextToken)
-        .then(res => {
-          // fetch nextToken if it exists, reset to null otherwise
-          if ('NextToken' in res) {
-            nextToken = res['NextToken']
-          } else {
-            nextToken = null
-          }
-          // get all non-deleted secret names
-          res['SecretList'].forEach(secret => {
-            if (!('DeletedDate' in secret)) {
-              allSecretNames.push(secret['Name'])
-            }
-          })
-          resolve(allSecretNames)
-        })
-        .catch(err => {
-          reject(err)
-        })
-    }
-    while (nextToken)
+    iterateSecrets(resolve, secretsManagerClient, allSecretNames)
   })
 }
 
