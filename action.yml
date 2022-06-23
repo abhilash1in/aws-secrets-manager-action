@@ -15,7 +15,7 @@ inputs:
     default: 'false'
   filters:
     description: 'two strings: tag key and tag value to filter on'
-    required: true
+    required: false
 runs:
   using: 'node12'
   main: 'dist/index.js'
