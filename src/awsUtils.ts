@@ -12,11 +12,20 @@ const getSecretValue = (secretsManagerClient: SecretsManager, secretName: string
   return secretsManagerClient.getSecretValue({ SecretId: secretName }).promise()
 }
 
-const listSecretsPaginated = (secretsManagerClient, nextToken) =>
-  secretsManagerClient.listSecrets({ NextToken: nextToken }).promise()
+const listSecretsPaginated = (secretsManagerClient, nextToken, filters) => {
+  return secretsManagerClient.listSecrets({ NextToken: nextToken,
+    Filters: [{
+      Key: 'tag-key',
+      Values: [filters[0]]
+    }, {Key: 'tag-value', Values: [filters[1]]},
+    ]
+  }).promise()
+}
 
-const iterateSecrets = (resolver, secretsManagerClient: SecretsManager, allSecretNames: string[], nextToken = null) => {
-  listSecretsPaginated(secretsManagerClient, nextToken)
+
+const iterateSecrets = (resolver, secretsManagerClient: SecretsManager, allSecretNames: string[],
+  filters: string[], nextToken = null) => {
+  listSecretsPaginated(secretsManagerClient, nextToken, filters)
     .then(res => {
       // get all non-deleted secret names
       res['SecretList'].forEach(secret => {
@@ -37,10 +46,10 @@ const iterateSecrets = (resolver, secretsManagerClient: SecretsManager, allSecre
     })
 }
 
-const listSecrets = (secretsManagerClient: SecretsManager): Promise<Array<string>> => {
+const listSecrets = (secretsManagerClient: SecretsManager, filters: string[] = []): Promise<Array<string>> => {
   return new Promise<Array<string>>((resolve, reject) => {
     const allSecretNames: string[] = []
-    iterateSecrets(resolve, secretsManagerClient, allSecretNames)
+    iterateSecrets(resolve, secretsManagerClient, allSecretNames, filters)
   })
 }
 
@@ -112,12 +121,12 @@ const getSecretValueMap = (secretsManagerClient: SecretsManager, secretName: str
 }
 
 const getSecretNamesToFetch =
-  (secretsManagerClient: SecretsManager, inputSecretNames: string[]): Promise<Array<string>> => {
+  (secretsManagerClient: SecretsManager, inputSecretNames: string[], filters: string[] = []): Promise<Array<string>> => {
     return new Promise<Array<string>>((resolve, reject) => {
       // list secrets, filter against wildcards and fetch filtered secrets
       // else, fetch specified secrets directly
       const secretNames: string[] = []
-      listSecrets(secretsManagerClient)
+      listSecrets(secretsManagerClient, filters)
         .then(secrets => {
           inputSecretNames.forEach(inputSecretName => {
             secretNames.push(...filterBy(secrets, inputSecretName))
