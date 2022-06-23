@@ -11,13 +11,15 @@ const hasWildcard: boolean = inputSecretNames.some(secretName => secretName.incl
 
 const shouldParseJSON = core.getBooleanInput(Inputs.PARSE_JSON)
 
+const filters: string[] = [...new Set(core.getMultilineInput(Inputs.FILTERS))]
+
 const AWSConfig = {}
 
 const secretsManagerClient = getSecretsManagerClient(AWSConfig)
 
 if (hasWildcard) {
   core.debug('Found wildcard secret names')
-  getSecretNamesToFetch(secretsManagerClient, inputSecretNames)
+  getSecretNamesToFetch(secretsManagerClient, inputSecretNames, filters)
     .then(secretNamesToFetch => {
       fetchAndInject(secretsManagerClient, secretNamesToFetch, shouldParseJSON)
     })
