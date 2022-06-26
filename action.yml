@@ -13,6 +13,9 @@ inputs:
     description: 'If true, disable annotation warnings in the GitHub Actions output.'
     required: false
     default: 'false'
+  filters:
+    description: 'two strings: tag key and tag value to filter on'
+    required: false
 runs:
   using: 'node12'
   main: 'dist/index.js'
