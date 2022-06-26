@@ -36,7 +36,7 @@ const iterateSecrets = (resolver, secretsManagerClient: SecretsManager, allSecre
 
       // fetch nextToken if it exists, reset to null otherwise
       if ('NextToken' in res) {
-        iterateSecrets(resolver, secretsManagerClient, allSecretNames, res['NextToken'], filters)
+        iterateSecrets(resolver, secretsManagerClient, allSecretNames, filters, res['NextToken'])
       } else {
         resolver(allSecretNames)
       }
