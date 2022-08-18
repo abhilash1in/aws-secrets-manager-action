@@ -23,6 +23,7 @@ steps:
   with:
     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
     aws-region: ${{ secrets.AWS_REGION }}
 
 - name: Read secrets from AWS Secrets Manager into environment variables
