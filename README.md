@@ -53,6 +53,13 @@ steps:
         *dev*
         app1/dev/*
       ```
+    - To retrieve a secret under a *specific* Environment Variable
+      ```yaml
+      secrets: |
+        my_secret_1 | TEST_SECRET
+      ```
+      ** This syntax does not work with wildcard `*` paths **
+
 - `parse-json`
   - If `parse-json: true` and secret value is a **valid** stringified JSON object, it will be parsed and flattened. Each of the key value pairs in the flattened JSON object will become individual secrets. The original secret name will be used as a prefix.
   - Examples: 

@@ -120,6 +120,13 @@ const getSecretNamesToFetch =
       listSecrets(secretsManagerClient)
         .then(secrets => {
           inputSecretNames.forEach(inputSecretName => {
+            // syntax for custom Environment Variable names with '|'
+            // is not supported in wildcard paths
+            const secretLineSplit = inputSecretName.split('|')
+            if (inputSecretName.includes('*') && secretLineSplit.length === 2){
+              core.setFailed(`Loading wildcard secrets (such as: '${secretLineSplit[0].trim()}') \
+in named Environment Variable is not supported!`)
+            }
             secretNames.push(...filterBy(secrets, inputSecretName))
           })
           resolve([...new Set(secretNames)])
@@ -134,9 +141,18 @@ const fetchAndInject = (secretsManagerClient: SecretsManager,
   secretNamesToFetch: Array<string>, shouldParseJSON: boolean): void => {
   core.debug(`Will fetch ${secretNamesToFetch.length} secrets: ${secretNamesToFetch}`)
   secretNamesToFetch.forEach((secretName) => {
+    // support syntax for custom Environment Variable names with '|'
+    // does not pass the part after '|' as part of the secret name
+    const secretLineSplit = secretName.split('|')
+    let secretEnvVarName = undefined
+    if (secretLineSplit.length === 2){
+      secretName = secretLineSplit[0].trim()
+      secretEnvVarName = secretLineSplit[1].trim()
+      core.debug(`Custom EnvVar name identified! Secret '${secretName}', EnvVar: '${secretEnvVarName}'`)
+    }
     getSecretValueMap(secretsManagerClient, secretName, shouldParseJSON)
       .then(map => {
-        injectSecretValueMapToEnvironment(map)
+        injectSecretValueMapToEnvironment(map, secretName, secretEnvVarName)
       })
       .catch(err => {
         core.setFailed(`Failed to fetch '${secretName}'. Error: ${err}.`)
