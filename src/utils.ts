@@ -62,7 +62,7 @@ export const getPOSIXString = (data: string): string => {
 }
 
 export const injectSecretValueMapToEnvironment = (secretValueMap: Record<string, any>,
-  secretEnvVarName: string): void => {
+  secretPath: string, secretEnvVarName: string): void => {
   const disableWarnings = core.getBooleanInput(Inputs.DISABLE_WARNINGS)
 
   for (const secretName in secretValueMap) {
@@ -76,7 +76,7 @@ export const injectSecretValueMapToEnvironment = (secretValueMap: Record<string,
     else {
       // If an Environment Variable is given by the user with the '|' syntax
       // use it directly
-      secretNamePOSIX = secretEnvVarName
+      secretNamePOSIX = getPOSIXString(secretName.replace(secretPath, secretEnvVarName))
     }
     if (secretEnvVarName === undefined && secretName !== secretNamePOSIX && !disableWarnings) {
       core.warning('One of the secrets has a name that is not POSIX compliant and hence cannot directly \
@@ -87,7 +87,7 @@ see the transformed environment variable name.\nPOSIX compliance: environment va
 upper case letters, digits and underscores. It cannot begin with a digit.')
       core.debug(`Secret name '${secretName}' is not POSIX compliant. It will be transformed to '${secretNamePOSIX}'.`)
     }
-    core.debug(`Injecting environment variable '${secretNamePOSIX}'.`)
+    core.debug(`Injecting secret: '${secretName}' in Environment Variable: '${secretNamePOSIX}'.`)
     core.exportVariable(secretNamePOSIX, secretValue)
   }
 }

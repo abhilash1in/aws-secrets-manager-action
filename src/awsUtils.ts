@@ -152,7 +152,7 @@ const fetchAndInject = (secretsManagerClient: SecretsManager,
     }
     getSecretValueMap(secretsManagerClient, secretName, shouldParseJSON)
       .then(map => {
-        injectSecretValueMapToEnvironment(map, secretEnvVarName)
+        injectSecretValueMapToEnvironment(map, secretName, secretEnvVarName)
       })
       .catch(err => {
         core.setFailed(`Failed to fetch '${secretName}'. Error: ${err}.`)
