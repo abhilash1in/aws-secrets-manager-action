@@ -44,7 +44,7 @@ const listSecrets = (secretsManagerClient: SecretsManager): Promise<Array<string
   })
 }
 
-const getSecretValueMap = (secretsManagerClient: SecretsManager, secretName: string, shouldParseJSON = false) => {
+const getSecretValueMap = (secretsManagerClient: SecretsManager, secretName: string, shouldParseJSON = false, noPrefix: boolean) => {
   return new Promise((resolve, reject) => {
     getSecretValue(secretsManagerClient, secretName)
       .then(data => {
@@ -64,10 +64,14 @@ const getSecretValueMap = (secretsManagerClient: SecretsManager, secretName: str
         // injected secrets will be of the form 'mySecret.foo' = 'bar'
         if (isJSONObjectString(secretValue) && shouldParseJSON) {
           const secretJSON = JSON.parse(secretValue)
-          const secretJSONWrapped = {}
-          secretJSONWrapped[secretName] = secretJSON
-          const secretJSONFlattened = flattenJSONObject(secretJSONWrapped)
-          secretValueMap = secretJSONFlattened
+          if (noPrefix) {
+            secretValueMap = flattenJSONObject(secretJSON)
+          } else {
+            const secretJSONWrapped = {}
+            secretJSONWrapped[secretName] = secretJSON
+            const secretJSONFlattened = flattenJSONObject(secretJSONWrapped)
+            secretValueMap = secretJSONFlattened
+          }
         }
         // Else, injected secrets will be of the form 'mySecret' = '{ "foo": "bar" }' (raw secret value string)
         else {
@@ -131,10 +135,10 @@ const getSecretNamesToFetch =
   }
 
 const fetchAndInject = (secretsManagerClient: SecretsManager,
-  secretNamesToFetch: Array<string>, shouldParseJSON: boolean): void => {
+  secretNamesToFetch: Array<string>, shouldParseJSON: boolean, noPrefix: boolean): void => {
   core.debug(`Will fetch ${secretNamesToFetch.length} secrets: ${secretNamesToFetch}`)
   secretNamesToFetch.forEach((secretName) => {
-    getSecretValueMap(secretsManagerClient, secretName, shouldParseJSON)
+    getSecretValueMap(secretsManagerClient, secretName, shouldParseJSON, noPrefix)
       .then(map => {
         injectSecretValueMapToEnvironment(map)
       })
