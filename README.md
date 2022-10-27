@@ -12,6 +12,7 @@ For example:
 - If your secret name is `dev.foo`, the injected environment variable name will be `DEV_FOO`.
 - If your secret name is `1/dev/foo`, the injected environment variable name will be `_1_DEV_FOO`.
 - If your secret name is `dev/foo`, value is `{ "bar": "baz" }` and `parse-json` is set to `true`, the injected environment variable name will be `DEV_FOO_BAR` (and value will be `baz`).
+- If you set `no-prefix: true`, it won't prefix your secrets at all.
 
 ## Usage
 > Refer [Configure AWS Credentials](https://github.com/aws-actions/configure-aws-credentials) for AWS recommended best practices on how to configure AWS credentials for use with GitHub Actions.
