@@ -44,7 +44,12 @@ const listSecrets = (secretsManagerClient: SecretsManager): Promise<Array<string
   })
 }
 
-const getSecretValueMap = (secretsManagerClient: SecretsManager, secretName: string, shouldParseJSON = false, noPrefix: boolean) => {
+const getSecretValueMap = (
+  secretsManagerClient: SecretsManager,
+  secretName: string,
+  shouldParseJSON = false,
+  noPrefix = false
+) => {
   return new Promise((resolve, reject) => {
     getSecretValue(secretsManagerClient, secretName)
       .then(data => {
