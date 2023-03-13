@@ -27,7 +27,7 @@
   },
   "homepage": "https://github.com/abhilash1in/aws-secrets-manager-action#readme",
   "dependencies": {
-    "@actions/core": "^1.2.6",
+    "@actions/core": "^1.10.0",
     "aws-sdk": "^2.792.0"
   },
   "devDependencies": {
