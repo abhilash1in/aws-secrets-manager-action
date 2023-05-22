@@ -1,6 +1,6 @@
-'use strict';
+'use strict'
 
-const AWS = jest.createMockFromModule('aws-sdk');
+const AWS = jest.createMockFromModule('aws-sdk')
 
 const mockSecrets = {
   my_secret_1: {
@@ -27,12 +27,12 @@ const mockSecrets = {
     Name: 'deleted_secret',
     DeletedDate: Date.now(),
   },
-};
+}
 
-const keys = Object.keys(mockSecrets);
-const values = [];
+const keys = Object.keys(mockSecrets)
+const values = []
 for (var key in mockSecrets) {
-  values.push(mockSecrets[key]);
+  values.push(mockSecrets[key])
 }
 
 const mockSecretsManager = jest.fn((secretsManagerConfig) => {
@@ -40,9 +40,9 @@ const mockSecretsManager = jest.fn((secretsManagerConfig) => {
     getSecretValue: jest.fn(({ SecretId }) => ({
       promise: jest.fn(() => {
         if (SecretId in mockSecrets) {
-          return Promise.resolve(mockSecrets[SecretId]);
+          return Promise.resolve(mockSecrets[SecretId])
         } else {
-          return Promise.reject(new Error('SecretId not in mockSecrets'));
+          return Promise.reject(new Error('SecretId not in mockSecrets'))
         }
       }),
     })),
@@ -51,9 +51,9 @@ const mockSecretsManager = jest.fn((secretsManagerConfig) => {
         SecretList: values,
       }),
     }),
-  };
-});
+  }
+})
 
-AWS.SecretsManager = mockSecretsManager;
+AWS.SecretsManager = mockSecretsManager
 
-module.exports = AWS;
+module.exports = AWS
