@@ -23,7 +23,7 @@ const listSecrets = (secretsManagerClient: SecretsManager): Promise<Array<string
     const allSecretNames: string[] = []
     do {
       listSecretsPaginated(secretsManagerClient, nextToken)
-        .then((res) => {
+        .then(res => {
           // fetch nextToken if it exists, reset to null otherwise
           if ('NextToken' in res) {
             nextToken = res['NextToken']
@@ -31,14 +31,14 @@ const listSecrets = (secretsManagerClient: SecretsManager): Promise<Array<string
             nextToken = null
           }
           // get all non-deleted secret names
-          res['SecretList'].forEach((secret) => {
+          res['SecretList'].forEach(secret => {
             if (!('DeletedDate' in secret)) {
               allSecretNames.push(secret['Name'])
             }
           })
           resolve(allSecretNames)
         })
-        .catch((err) => {
+        .catch(err => {
           reject(err)
         })
     } while (nextToken)
@@ -53,7 +53,7 @@ const getSecretValueMap = (
 ) => {
   return new Promise((resolve, reject) => {
     getSecretValue(secretsManagerClient, secretName)
-      .then((data) => {
+      .then(data => {
         let secretValue
         // Decrypts secret using the associated KMS CMK.
         // Depending on whether the secret is a string or binary, one of these fields will be populated.
@@ -85,7 +85,7 @@ const getSecretValueMap = (
         }
         resolve(secretValueMap)
       })
-      .catch((err) => {
+      .catch(err => {
         if ('code' in err) {
           if (err.code === 'DecryptionFailureException')
             // Secrets Manager can't decrypt the protected secret text using the provided KMS key.
@@ -129,13 +129,13 @@ const getSecretNamesToFetch = (
     // else, fetch specified secrets directly
     const secretNames: string[] = []
     listSecrets(secretsManagerClient)
-      .then((secrets) => {
-        inputSecretNames.forEach((inputSecretName) => {
+      .then(secrets => {
+        inputSecretNames.forEach(inputSecretName => {
           secretNames.push(...filterBy(secrets, inputSecretName))
         })
         resolve([...new Set(secretNames)])
       })
-      .catch((err) => {
+      .catch(err => {
         reject(err)
       })
   })
@@ -148,12 +148,12 @@ const fetchAndInject = (
   noPrefix: boolean
 ): void => {
   core.debug(`Will fetch ${secretNamesToFetch.length} secrets: ${secretNamesToFetch}`)
-  secretNamesToFetch.forEach((secretName) => {
+  secretNamesToFetch.forEach(secretName => {
     getSecretValueMap(secretsManagerClient, secretName, shouldParseJSON, noPrefix)
-      .then((map) => {
+      .then(map => {
         injectSecretValueMapToEnvironment(map)
       })
-      .catch((err) => {
+      .catch(err => {
         core.setFailed(`Failed to fetch '${secretName}'. Error: ${err}.`)
       })
   })

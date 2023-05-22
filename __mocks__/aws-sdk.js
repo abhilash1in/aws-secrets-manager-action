@@ -35,7 +35,7 @@ for (var key in mockSecrets) {
   values.push(mockSecrets[key])
 }
 
-const mockSecretsManager = jest.fn((secretsManagerConfig) => {
+const mockSecretsManager = jest.fn(secretsManagerConfig => {
   return {
     getSecretValue: jest.fn(({ SecretId }) => ({
       promise: jest.fn(() => {

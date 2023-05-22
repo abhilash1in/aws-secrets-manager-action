@@ -7,7 +7,7 @@ import { getSecretsManagerClient, getSecretNamesToFetch, fetchAndInject } from '
 const inputSecretNames: string[] = [...new Set(core.getMultilineInput(Inputs.SECRETS))]
 
 // Check if any secret name contains a wildcard '*'
-const hasWildcard: boolean = inputSecretNames.some((secretName) => secretName.includes('*'))
+const hasWildcard: boolean = inputSecretNames.some(secretName => secretName.includes('*'))
 
 const shouldParseJSON = core.getBooleanInput(Inputs.PARSE_JSON)
 
@@ -20,10 +20,10 @@ const secretsManagerClient = getSecretsManagerClient(AWSConfig)
 if (hasWildcard) {
   core.debug('Found wildcard secret names')
   getSecretNamesToFetch(secretsManagerClient, inputSecretNames)
-    .then((secretNamesToFetch) => {
+    .then(secretNamesToFetch => {
       fetchAndInject(secretsManagerClient, secretNamesToFetch, shouldParseJSON, noPrefix)
     })
-    .catch((err) => {
+    .catch(err => {
       core.setFailed(`Action failed with error: ${err}`)
     })
 } else {

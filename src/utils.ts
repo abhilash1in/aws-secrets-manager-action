@@ -56,7 +56,7 @@ export const flattenJSONObject = (data: Record<string, any>): Record<string, any
 }
 
 export const filterBy = (items: Array<string>, filter: string): Array<string> => {
-  return items.filter((item) => new RegExp('^' + filter.replace(/\*/g, '.*') + '$').test(item))
+  return items.filter(item => new RegExp('^' + filter.replace(/\*/g, '.*') + '$').test(item))
 }
 
 export const getPOSIXString = (data: string): string => {
