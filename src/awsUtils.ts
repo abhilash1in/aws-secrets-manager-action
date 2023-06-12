@@ -120,6 +120,8 @@ const getSecretNamesToFetch =
       listSecrets(secretsManagerClient)
         .then(secrets => {
           inputSecretNames.forEach(inputSecretName => {
+            core.debug('The secrets are: ' + secrets)
+
             secretNames.push(...filterBy(secrets, inputSecretName))
           })
           resolve([...new Set(secretNames)])
