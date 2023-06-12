@@ -17,7 +17,7 @@ const secretsManagerClient = getSecretsManagerClient(AWSConfig)
 core.debug('Julio esta aca')
 
 if (hasWildcard) {
-  core.debug('Found wildcard secret names')
+  core.debug('Found wildcard secret names siii')
   getSecretNamesToFetch(secretsManagerClient, inputSecretNames)
     .then(secretNamesToFetch => {
       fetchAndInject(secretsManagerClient, secretNamesToFetch, shouldParseJSON)
