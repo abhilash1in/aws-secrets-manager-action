@@ -117,6 +117,7 @@ const getSecretNamesToFetch =
       // list secrets, filter against wildcards and fetch filtered secrets
       // else, fetch specified secrets directly
       const secretNames: string[] = []
+      core.debug('Listing secrets')
       listSecrets(secretsManagerClient)
         .then(secrets => {
           inputSecretNames.forEach(inputSecretName => {
@@ -127,8 +128,10 @@ const getSecretNamesToFetch =
           resolve([...new Set(secretNames)])
         })
         .catch(err => {
+          core.debug('The error is: ' + err)
           reject(err)
         })
+      core.debug('Finished listing secrets')
     })
   }
 
