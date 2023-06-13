@@ -15,33 +15,26 @@ const getSecretValue = (secretsManagerClient: SecretsManager, secretName: string
 const listSecretsPaginated = (secretsManagerClient, nextToken) =>
   secretsManagerClient.listSecrets({ NextToken: nextToken }).promise()
 
-const listSecrets = (secretsManagerClient: SecretsManager): Promise<Array<string>> => {
-  return new Promise<Array<string>>((resolve, reject) => {
-    let nextToken: string = null
-    const allSecretNames: string[] = []
-    do {
-      listSecretsPaginated(secretsManagerClient, nextToken)
-        .then(res => {
-          // fetch nextToken if it exists, reset to null otherwise
-          if ('NextToken' in res) {
-            nextToken = res['NextToken']
-          } else {
-            nextToken = null
-          }
-          // get all non-deleted secret names
-          res['SecretList'].forEach(secret => {
-            if (!('DeletedDate' in secret)) {
-              allSecretNames.push(secret['Name'])
-            }
-          })
-          resolve(allSecretNames)
-        })
-        .catch(err => {
-          reject(err)
-        })
+const listSecrets = async (secretsManagerClient: SecretsManager): Promise<string[]> => {
+  let nextToken: string = null
+  const allSecretNames: string[] = []
+  do {
+    const response = await secretsManagerClient.listSecrets({ NextToken: nextToken }).promise()
+    if ('NextToken' in response) {
+      nextToken = response['NextToken']
+    } else {
+      nextToken = null
     }
-    while (nextToken)
-  })
+
+    response['SecretList'].forEach(secret => {
+      if (!('DeletedDate' in secret)) {
+        allSecretNames.push(secret['Name'])
+      }
+    })
+  }
+  while (nextToken)
+
+  return allSecretNames;
 }
 
 const getSecretValueMap = (secretsManagerClient: SecretsManager, secretName: string, shouldParseJSON = false) => {
