@@ -14,6 +14,7 @@ const shouldParseJSON = core.getBooleanInput(Inputs.PARSE_JSON)
 const AWSConfig = {}
 
 const secretsManagerClient = getSecretsManagerClient(AWSConfig)
+
 if (hasWildcard) {
   core.debug('Found wildcard secret names')
   getSecretNamesToFetch(secretsManagerClient, inputSecretNames)
