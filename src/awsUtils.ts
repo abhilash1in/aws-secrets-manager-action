@@ -110,21 +110,16 @@ const getSecretNamesToFetch =
       // list secrets, filter against wildcards and fetch filtered secrets
       // else, fetch specified secrets directly
       const secretNames: string[] = []
-      console.log('Listing secrets')
       listSecrets(secretsManagerClient)
         .then(secrets => {
           inputSecretNames.forEach(inputSecretName => {
-            console.log('The secrets are: ' + secrets)
-
             secretNames.push(...filterBy(secrets, inputSecretName))
           })
           resolve([...new Set(secretNames)])
         })
         .catch(err => {
-          console.log('The error is: ' + err)
           reject(err)
         })
-      console.log('Finished listing secrets')
     })
   }
 
