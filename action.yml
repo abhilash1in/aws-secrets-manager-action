@@ -12,9 +12,13 @@ inputs:
   disable-warnings:
     description: 'If true, disable annotation warnings in the GitHub Actions output.'
     required: false
+    default: 'true'
+  no-prefix:
+    description: 'Don not prefix the environment variable names with the secret name.'
+    required: false
     default: 'false'
 runs:
-  using: 'node12'
+  using: 'node20'
   main: 'dist/index.js'
 branding:
   icon: lock

@@ -6,8 +6,10 @@ import { flattenJSONObject, isJSONObjectString, filterBy, injectSecretValueMapTo
 
 const getSecretsManagerClient = (config: Record<string, any>): SecretsManager => new SecretsManager(config)
 
-const getSecretValue = (secretsManagerClient: SecretsManager, secretName: string):
-  Promise<PromiseResult<GetSecretValueResponse, AWSError>> => {
+const getSecretValue = (
+  secretsManagerClient: SecretsManager,
+  secretName: string
+): Promise<PromiseResult<GetSecretValueResponse, AWSError>> => {
   core.debug(`Fetching '${secretName}'`)
   return secretsManagerClient.getSecretValue({ SecretId: secretName }).promise()
 }
@@ -39,12 +41,16 @@ const listSecrets = (secretsManagerClient: SecretsManager): Promise<Array<string
         .catch(err => {
           reject(err)
         })
-    }
-    while (nextToken)
+    } while (nextToken)
   })
 }
 
-const getSecretValueMap = (secretsManagerClient: SecretsManager, secretName: string, shouldParseJSON = false) => {
+const getSecretValueMap = (
+  secretsManagerClient: SecretsManager,
+  secretName: string,
+  shouldParseJSON = false,
+  noPrefix = false
+) => {
   return new Promise((resolve, reject) => {
     getSecretValue(secretsManagerClient, secretName)
       .then(data => {
@@ -64,10 +70,14 @@ const getSecretValueMap = (secretsManagerClient: SecretsManager, secretName: str
         // injected secrets will be of the form 'mySecret.foo' = 'bar'
         if (isJSONObjectString(secretValue) && shouldParseJSON) {
           const secretJSON = JSON.parse(secretValue)
-          const secretJSONWrapped = {}
-          secretJSONWrapped[secretName] = secretJSON
-          const secretJSONFlattened = flattenJSONObject(secretJSONWrapped)
-          secretValueMap = secretJSONFlattened
+          if (noPrefix) {
+            secretValueMap = flattenJSONObject(secretJSON)
+          } else {
+            const secretJSONWrapped = {}
+            secretJSONWrapped[secretName] = secretJSON
+            const secretJSONFlattened = flattenJSONObject(secretJSONWrapped)
+            secretValueMap = secretJSONFlattened
+          }
         }
         // Else, injected secrets will be of the form 'mySecret' = '{ "foo": "bar" }' (raw secret value string)
         else {
@@ -101,9 +111,8 @@ const getSecretValueMap = (secretsManagerClient: SecretsManager, secretName: str
             // We don't have access to the resource that you asked for.
             // Deal with the exception here, and/or rethrow at your discretion.
             return reject(err)
-          else
-            // Fetch failed due to an unrecognized error code
-            return reject(err)
+          // Fetch failed due to an unrecognized error code
+          else return reject(err)
         }
         // Fetch failed for some other reason
         return reject(err)
@@ -111,30 +120,36 @@ const getSecretValueMap = (secretsManagerClient: SecretsManager, secretName: str
   })
 }
 
-const getSecretNamesToFetch =
-  (secretsManagerClient: SecretsManager, inputSecretNames: string[]): Promise<Array<string>> => {
-    return new Promise<Array<string>>((resolve, reject) => {
-      // list secrets, filter against wildcards and fetch filtered secrets
-      // else, fetch specified secrets directly
-      const secretNames: string[] = []
-      listSecrets(secretsManagerClient)
-        .then(secrets => {
-          inputSecretNames.forEach(inputSecretName => {
-            secretNames.push(...filterBy(secrets, inputSecretName))
-          })
-          resolve([...new Set(secretNames)])
+const getSecretNamesToFetch = (
+  secretsManagerClient: SecretsManager,
+  inputSecretNames: string[]
+): Promise<Array<string>> => {
+  return new Promise<Array<string>>((resolve, reject) => {
+    // list secrets, filter against wildcards and fetch filtered secrets
+    // else, fetch specified secrets directly
+    const secretNames: string[] = []
+    listSecrets(secretsManagerClient)
+      .then(secrets => {
+        inputSecretNames.forEach(inputSecretName => {
+          secretNames.push(...filterBy(secrets, inputSecretName))
         })
-        .catch(err => {
-          reject(err)
-        })
-    })
-  }
+        resolve([...new Set(secretNames)])
+      })
+      .catch(err => {
+        reject(err)
+      })
+  })
+}
 
-const fetchAndInject = (secretsManagerClient: SecretsManager,
-  secretNamesToFetch: Array<string>, shouldParseJSON: boolean): void => {
+const fetchAndInject = (
+  secretsManagerClient: SecretsManager,
+  secretNamesToFetch: Array<string>,
+  shouldParseJSON: boolean,
+  noPrefix: boolean
+): void => {
   core.debug(`Will fetch ${secretNamesToFetch.length} secrets: ${secretNamesToFetch}`)
-  secretNamesToFetch.forEach((secretName) => {
-    getSecretValueMap(secretsManagerClient, secretName, shouldParseJSON)
+  secretNamesToFetch.forEach(secretName => {
+    getSecretValueMap(secretsManagerClient, secretName, shouldParseJSON, noPrefix)
       .then(map => {
         injectSecretValueMapToEnvironment(map)
       })
@@ -149,5 +164,5 @@ export {
   listSecrets,
   getSecretValueMap,
   getSecretNamesToFetch,
-  fetchAndInject
+  fetchAndInject,
 }
