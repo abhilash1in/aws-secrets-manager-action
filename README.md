@@ -69,7 +69,7 @@ steps:
 | `false`      | `dev_foo` = `{ "bar": "baz" }`                   | `DEV_FOO` = `{ "bar": "baz" }`                      | Not parsed                                                                              |
 
 - `disable-warnings`
-  - If `disable-warnings: true`, warnings regarding POSIX compliance in GitHub Actions output will be suppressed.
+  - If `disable-warnings: true`, warnings regarding POSIX compliance in GitHub Actions output will be suppressed. **This is turned on by default as we've seen no issues from this**.
 
 #### Note:
 
