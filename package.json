@@ -27,19 +27,21 @@
   },
   "homepage": "https://github.com/abhilash1in/aws-secrets-manager-action#readme",
   "dependencies": {
-    "@actions/core": "^1.2.6",
-    "aws-sdk": "^2.792.0"
+    "@actions/core": "^1.10.0",
+    "aws-sdk": "^2.1241.0"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^4.7.0",
-    "@typescript-eslint/parser": "^4.7.0",
-    "@vercel/ncc": "^0.25.1",
-    "dotenv": "^8.2.0",
-    "eslint": "^7.13.0",
-    "eslint-plugin-spellcheck": "0.0.17",
-    "@types/jest": "^26.0.15",
-    "jest": "^26.6.3",
-    "ts-jest": "^26.4.4",
-    "typescript": "^4.0.5"
+    "@types/jest": "^29.2.0",
+    "@typescript-eslint/eslint-plugin": "^7.3.1",
+    "@typescript-eslint/parser": "^7.3.1",
+    "@vercel/ncc": "^0.38.1",
+    "dotenv": "^16.0.3",
+    "eslint": "^8.26.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-spellcheck": "^0.0.20",
+    "jest": "^29.2.2",
+    "prettier": "^3.2.5",
+    "ts-jest": "^29.0.3",
+    "typescript": "^5.0.4"
   }
 }

@@ -15,9 +15,9 @@ jobs:
   unit-tests:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
-    - run: npm ci
-    - run: npm test
+      - uses: actions/checkout@v1
+      - run: npm ci
+      - run: npm test
 
   integration-test-latest:
     # Run only on 'push' or 'pull_request within same repository (not from a fork)'
@@ -26,17 +26,17 @@ jobs:
     needs: [unit-tests]
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ secrets.AWS_REGION }}
-    - uses: ./
-      with:
-        secrets: '*secret*'
-        parse-json: true
+      - uses: actions/checkout@v1
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+      - uses: ./
+        with:
+          secrets: '*secret*'
+          parse-json: true
 
   integration-test-release:
     # Run only on 'push' or 'pull_request within same repository (not from a fork)'
@@ -45,13 +45,13 @@ jobs:
     needs: [unit-tests]
     runs-on: ubuntu-latest
     steps:
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ secrets.AWS_REGION }}
-    - uses: abhilash1in/aws-secrets-manager-action@v2.1.0
-      with:
-        secrets: 'my_secret*'
-        parse-json: true
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+      - uses: abhilash1in/aws-secrets-manager-action@v2.1.0
+        with:
+          secrets: 'my_secret*'
+          parse-json: true
